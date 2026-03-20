@@ -130,6 +130,32 @@ class CH_Dashboard {
 		<div class="wrap consent-hub-dashboard-wrap">
 			<h1><?php esc_html_e( 'ConsentHub Dashboard', 'consent-hub' ); ?></h1>
 
+			<?php
+			$settings = get_option( 'ch_settings', ch_default_settings() );
+			$table_ok = CH_Database::table_exists();
+
+			if ( ! $table_ok ) :
+				CH_Database::ensure_table();
+				$table_ok = CH_Database::table_exists();
+				if ( ! $table_ok ) : ?>
+				<div class="notice notice-error"><p>
+					<?php esc_html_e( 'Error: no se pudo crear la tabla de registros en la base de datos. Desactiva y reactiva el plugin.', 'consent-hub' ); ?>
+				</p></div>
+				<?php endif;
+			endif;
+
+			if ( empty( $settings['logging_enabled'] ) ) : ?>
+			<div class="notice notice-warning"><p>
+				<?php
+				printf(
+					esc_html__( 'El registro de consentimientos está desactivado. Actívalo en %sAjustes%s para empezar a recopilar datos.', 'consent-hub' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=consent-hub' ) ) . '">',
+					'</a>'
+				);
+				?>
+			</p></div>
+			<?php endif; ?>
+
 			<div class="ch-grid-2">
 				<!-- Metrics Cards -->
 				<div class="ch-metric-card">

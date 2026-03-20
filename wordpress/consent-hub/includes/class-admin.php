@@ -11,23 +11,18 @@ class CH_Admin {
 	}
 
 	public static function action_links( $links ) {
-		$url = admin_url( 'options-general.php?page=consent-hub' );
+		$url = admin_url( 'admin.php?page=consent-hub' );
 		array_unshift( $links, '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Ajustes', 'consent-hub' ) . '</a>' );
 		return $links;
 	}
 
 	public static function add_menu() {
-		add_options_page(
-			'ConsentHub',
-			'ConsentHub',
-			'manage_options',
-			'consent-hub',
-			array( __CLASS__, 'render_page' )
-		);
+		// Menu is registered by CH_Dashboard.
+		// This is kept for the settings page slug 'consent-hub' to work.
 	}
 
 	public static function enqueue( $hook ) {
-		if ( $hook !== 'settings_page_consent-hub' ) return;
+		if ( $hook !== 'consenthub_page_consent-hub' ) return;
 		wp_enqueue_style( 'consent-hub-admin', CH_URL . 'assets/admin.css', array(), CH_VERSION );
 	}
 
@@ -63,7 +58,7 @@ class CH_Admin {
 
 		// Booleans (checkbox: present = true, absent = false)
 		$bool_keys = array(
-			'auto_show', 'gcm_enabled', 'gcm_url_passthrough',
+			'auto_show', 'logging_enabled', 'gcm_enabled', 'gcm_url_passthrough',
 			'gcm_ads_redaction', 'blocker_enabled', 'geo_enabled',
 		);
 		foreach ( $bool_keys as $key ) {
@@ -74,6 +69,10 @@ class CH_Admin {
 		$clean['gcm_wait_update'] = isset( $input['gcm_wait_update'] )
 			? absint( $input['gcm_wait_update'] )
 			: $defaults['gcm_wait_update'];
+
+		$clean['logging_retention'] = isset( $input['logging_retention'] )
+			? absint( $input['logging_retention'] )
+			: $defaults['logging_retention'];
 
 		// Validate position
 		$valid_positions = array( 'bottom', 'top', 'center' );
@@ -212,6 +211,21 @@ class CH_Admin {
 						<label><?php esc_html_e( 'Activar blocker', 'consent-hub' ); ?></label>
 						<input type="checkbox" name="ch_settings[blocker_enabled]" value="1" <?php checked( $s['blocker_enabled'] ); ?>>
 						<span class="ch-hint"><?php esc_html_e( 'Intercepta scripts inyectados dinámicamente (Hotjar, Facebook Pixel, etc.).', 'consent-hub' ); ?></span>
+					</div>
+				</div>
+
+				<!-- Logging -->
+				<div class="ch-section">
+					<h2><?php esc_html_e( 'Registro de consentimientos', 'consent-hub' ); ?></h2>
+					<div class="ch-field">
+						<label><?php esc_html_e( 'Activar logging', 'consent-hub' ); ?></label>
+						<input type="checkbox" name="ch_settings[logging_enabled]" value="1" <?php checked( $s['logging_enabled'] ); ?>>
+						<span class="ch-hint"><?php esc_html_e( 'Guarda un registro local de cada consentimiento (aceptado, rechazado, parcial).', 'consent-hub' ); ?></span>
+					</div>
+					<div class="ch-field">
+						<label><?php esc_html_e( 'Retención (días)', 'consent-hub' ); ?></label>
+						<input type="number" name="ch_settings[logging_retention]" value="<?php echo esc_attr( $s['logging_retention'] ); ?>" min="7" max="365" step="1">
+						<span class="ch-hint"><?php esc_html_e( 'Los registros más antiguos se eliminan automáticamente. Mínimo 7, máximo 365.', 'consent-hub' ); ?></span>
 					</div>
 				</div>
 
