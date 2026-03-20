@@ -124,6 +124,7 @@ test-*.html
 
 # Local development only
 .claude/
+CLAUDE.md
 development-notes.md
 local-test-*.php
 

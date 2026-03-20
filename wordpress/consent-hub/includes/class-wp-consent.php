@@ -19,8 +19,8 @@ class CH_WP_Consent {
 		$plugin = plugin_basename( CH_PATH . 'consent-hub.php' );
 		add_filter( 'wp_consent_api_registered_' . $plugin, '__return_true' );
 
-		// Add JS bridge when WP Consent API is active
-		add_action( 'wp_footer', array( __CLASS__, 'output_bridge' ), 20 );
+		// Enqueue JS bridge when WP Consent API is active
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_bridge' ), 20 );
 	}
 
 	/**
@@ -31,39 +31,18 @@ class CH_WP_Consent {
 	}
 
 	/**
-	 * Output JS bridge that syncs ConsentHub consent to WP Consent API.
+	 * Enqueue the JS bridge that syncs ConsentHub consent to WP Consent API.
 	 */
-	public static function output_bridge() {
-		// Only output if WP Consent API is active
+	public static function enqueue_bridge() {
+		// Only enqueue if WP Consent API is active
 		if ( ! function_exists( 'wp_set_consent' ) ) return;
-		?>
-		<script>
-		(function(){
-			var map = {
-				analytics: 'statistics',
-				marketing: 'marketing',
-				preferences: 'preferences'
-			};
 
-			function sync(consent) {
-				if (!consent || !consent.categories || typeof wp_set_consent !== 'function') return;
-				for (var cat in map) {
-					if (consent.categories.hasOwnProperty(cat)) {
-						wp_set_consent(map[cat], consent.categories[cat] ? 'allow' : 'deny');
-					}
-				}
-				wp_set_consent('functional', 'allow');
-			}
-
-			document.addEventListener('consenthub:consent', function(e) { sync(e.detail); });
-			document.addEventListener('consenthub:consent:existing', function(e) { sync(e.detail); });
-			document.addEventListener('consenthub:consent:reset', function() {
-				if (typeof wp_set_consent !== 'function') return;
-				var cats = ['statistics', 'marketing', 'preferences'];
-				for (var i = 0; i < cats.length; i++) wp_set_consent(cats[i], 'deny');
-			});
-		})();
-		</script>
-		<?php
+		wp_enqueue_script(
+			'consent-hub-wp-bridge',
+			CH_URL . 'assets/wp-consent-bridge.js',
+			array( 'consent-hub' ),
+			CH_VERSION,
+			true
+		);
 	}
 }

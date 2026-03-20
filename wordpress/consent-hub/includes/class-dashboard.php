@@ -16,7 +16,7 @@ class CH_Dashboard {
 	 */
 	public static function add_menu() {
 		add_menu_page(
-			'ConsentHub Dashboard',
+			__( 'ConsentHub Dashboard', 'consent-hub' ),
 			'ConsentHub',
 			'manage_options',
 			'consent-hub-dashboard',
@@ -28,8 +28,8 @@ class CH_Dashboard {
 		// Add settings as submenu
 		add_submenu_page(
 			'consent-hub-dashboard',
-			'Ajustes',
-			'Ajustes',
+			__( 'Ajustes', 'consent-hub' ),
+			__( 'Ajustes', 'consent-hub' ),
 			'manage_options',
 			'consent-hub',
 			array( 'CH_Admin', 'render_page' )
@@ -128,33 +128,33 @@ class CH_Dashboard {
 		$last_log = $data['last_log'];
 		?>
 		<div class="wrap consent-hub-dashboard-wrap">
-			<h1>ConsentHub Dashboard</h1>
+			<h1><?php esc_html_e( 'ConsentHub Dashboard', 'consent-hub' ); ?></h1>
 
 			<div class="ch-grid-2">
 				<!-- Metrics Cards -->
 				<div class="ch-metric-card">
-					<div class="ch-metric-label">Aceptados</div>
-					<div class="ch-metric-value" style="color: #27ae60;">
+					<div class="ch-metric-label"><?php esc_html_e( 'Aceptados', 'consent-hub' ); ?></div>
+					<div class="ch-metric-value ch-metric-accepted">
 						<?php echo esc_html( $totals['accepted'] ); ?>
 					</div>
 				</div>
 
 				<div class="ch-metric-card">
-					<div class="ch-metric-label">Rechazados</div>
-					<div class="ch-metric-value" style="color: #e74c3c;">
+					<div class="ch-metric-label"><?php esc_html_e( 'Rechazados', 'consent-hub' ); ?></div>
+					<div class="ch-metric-value ch-metric-rejected">
 						<?php echo esc_html( $totals['rejected'] ); ?>
 					</div>
 				</div>
 
 				<div class="ch-metric-card">
-					<div class="ch-metric-label">Parciales</div>
-					<div class="ch-metric-value" style="color: #f39c12;">
+					<div class="ch-metric-label"><?php esc_html_e( 'Parciales', 'consent-hub' ); ?></div>
+					<div class="ch-metric-value ch-metric-partial">
 						<?php echo esc_html( $totals['partial'] ); ?>
 					</div>
 				</div>
 
 				<div class="ch-metric-card">
-					<div class="ch-metric-label">Total</div>
+					<div class="ch-metric-label"><?php esc_html_e( 'Total', 'consent-hub' ); ?></div>
 					<div class="ch-metric-value">
 						<?php echo esc_html( $total_logs ); ?>
 					</div>
@@ -163,7 +163,7 @@ class CH_Dashboard {
 
 			<!-- Chart -->
 			<div class="ch-section">
-				<h2>Últimos 7 días</h2>
+				<h2><?php esc_html_e( 'Últimos 7 días', 'consent-hub' ); ?></h2>
 				<div class="ch-chart-container">
 					<canvas id="consentChart" width="400" height="200"></canvas>
 				</div>
@@ -171,13 +171,13 @@ class CH_Dashboard {
 
 			<!-- Summary Table -->
 			<div class="ch-section">
-				<h2>Resumen</h2>
+				<h2><?php esc_html_e( 'Resumen', 'consent-hub' ); ?></h2>
 				<table class="widefat">
 					<thead>
 						<tr>
-							<th>Tipo</th>
-							<th>Cantidad</th>
-							<th>Porcentaje</th>
+							<th><?php esc_html_e( 'Tipo', 'consent-hub' ); ?></th>
+							<th><?php esc_html_e( 'Cantidad', 'consent-hub' ); ?></th>
+							<th><?php esc_html_e( 'Porcentaje', 'consent-hub' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -198,7 +198,7 @@ class CH_Dashboard {
 						} else {
 							?>
 							<tr>
-								<td colspan="3">Sin datos</td>
+								<td colspan="3"><?php esc_html_e( 'Sin datos', 'consent-hub' ); ?></td>
 							</tr>
 							<?php
 						}
@@ -210,17 +210,17 @@ class CH_Dashboard {
 			<!-- Info -->
 			<div class="ch-section ch-info">
 				<p>
-					<strong>Último registro:</strong>
+					<strong><?php esc_html_e( 'Último registro:', 'consent-hub' ); ?></strong>
 					<?php
 					if ( $last_log ) {
 						echo esc_html( $last_log );
 					} else {
-						echo 'Ninguno aún';
+						esc_html_e( 'Ninguno aún', 'consent-hub' );
 					}
 					?>
 				</p>
 				<p>
-					<strong>Plugin:</strong> ConsentHub <?php echo esc_html( CH_VERSION ); ?>
+					<strong><?php esc_html_e( 'Plugin:', 'consent-hub' ); ?></strong> ConsentHub <?php echo esc_html( CH_VERSION ); ?>
 				</p>
 			</div>
 		</div>

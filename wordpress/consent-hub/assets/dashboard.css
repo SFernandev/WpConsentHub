@@ -125,6 +125,11 @@
 	color: #333;
 }
 
+/* Metric colors */
+.ch-metric-accepted { color: #27ae60; }
+.ch-metric-rejected { color: #e74c3c; }
+.ch-metric-partial  { color: #f39c12; }
+
 /* Responsive */
 @media (max-width: 768px) {
 	.consent-hub-dashboard-wrap {
