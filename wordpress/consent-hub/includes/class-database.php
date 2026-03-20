@@ -24,6 +24,7 @@ class CH_Database {
 			consent_type VARCHAR(20) NOT NULL,
 			categories VARCHAR(255) NOT NULL,
 			geo_region VARCHAR(10),
+			ip_partial VARCHAR(39),
 			ip_hash VARCHAR(64),
 			user_agent_hash VARCHAR(64),
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -50,6 +51,20 @@ class CH_Database {
 	public static function ensure_table() {
 		if ( ! self::table_exists() ) {
 			self::create_table();
+		} else {
+			self::maybe_add_ip_partial_column();
+		}
+	}
+
+	/**
+	 * Add ip_partial column if it doesn't exist (migration for existing installs).
+	 */
+	private static function maybe_add_ip_partial_column() {
+		global $wpdb;
+		$table = self::table_name();
+		$col = $wpdb->get_results( "SHOW COLUMNS FROM {$table} LIKE 'ip_partial'" );
+		if ( empty( $col ) ) {
+			$wpdb->query( "ALTER TABLE {$table} ADD COLUMN ip_partial VARCHAR(39) AFTER geo_region" );
 		}
 	}
 
@@ -74,11 +89,13 @@ class CH_Database {
 		self::ensure_table();
 		$table = self::table_name();
 
-		// Hash IP (first 3 octets only, not reversible)
+		// Store partial IP (first 3 octets) + hash for privacy
 		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( $_SERVER['REMOTE_ADDR'] ) : '';
 		$ip_parts = explode( '.', $ip );
+		$ip_partial = '';
 		if ( count( $ip_parts ) >= 3 ) {
-			$ip_parts[3] = '0'; // Clear last octet
+			$ip_partial = $ip_parts[0] . '.' . $ip_parts[1] . '.' . $ip_parts[2] . '.***';
+			$ip_parts[3] = '0';
 		}
 		$ip_masked = implode( '.', $ip_parts );
 		$ip_hash = hash( 'sha256', $ip_masked );
@@ -91,10 +108,11 @@ class CH_Database {
 			'consent_type'   => sanitize_text_field( $type ),
 			'categories'     => wp_json_encode( $categories ),
 			'geo_region'     => sanitize_text_field( $region ),
+			'ip_partial'     => $ip_partial,
 			'ip_hash'        => $ip_hash,
 			'user_agent_hash'=> $ua_hash,
 			'created_at'     => current_time( 'mysql', true ),
-		), array( '%s', '%s', '%s', '%s', '%s', '%s' ) );
+		), array( '%s', '%s', '%s', '%s', '%s', '%s', '%s' ) );
 	}
 
 	/**
@@ -177,6 +195,23 @@ class CH_Database {
 		$table = self::table_name();
 		$time = $wpdb->get_var( "SELECT created_at FROM {$table} ORDER BY created_at DESC LIMIT 1" );
 		return $time;
+	}
+
+	/**
+	 * Get recent consent logs.
+	 *
+	 * @param int $limit Default 10
+	 * @return array
+	 */
+	public static function get_recent_logs( $limit = 10, $offset = 0 ) {
+		global $wpdb;
+		$table = self::table_name();
+		return $wpdb->get_results( $wpdb->prepare(
+			"SELECT id, consent_type, categories, geo_region, ip_partial, created_at
+			 FROM {$table} ORDER BY created_at DESC LIMIT %d OFFSET %d",
+			$limit,
+			$offset
+		) );
 	}
 
 	/**
