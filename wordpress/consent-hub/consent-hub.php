@@ -57,10 +57,34 @@ function ch_activate() {
 	if ( get_option( 'ch_settings' ) === false ) {
 		update_option( 'ch_settings', ch_default_settings() );
 	}
-	// Create consent log table
 	CH_Database::create_table();
+
+	// Schedule daily cleanup cron
+	if ( ! wp_next_scheduled( 'ch_daily_cleanup' ) ) {
+		wp_schedule_event( time(), 'daily', 'ch_daily_cleanup' );
+	}
 }
 register_activation_hook( __FILE__, 'ch_activate' );
+
+/**
+ * Deactivation: remove scheduled cron.
+ */
+function ch_deactivate() {
+	wp_clear_scheduled_hook( 'ch_daily_cleanup' );
+}
+register_deactivation_hook( __FILE__, 'ch_deactivate' );
+
+/**
+ * Daily cron: clean up old consent logs.
+ */
+function ch_cron_cleanup() {
+	$s = get_option( 'ch_settings', ch_default_settings() );
+	if ( ! empty( $s['logging_enabled'] ) ) {
+		$days = isset( $s['logging_retention'] ) ? absint( $s['logging_retention'] ) : 90;
+		CH_Database::cleanup( $days );
+	}
+}
+add_action( 'ch_daily_cleanup', 'ch_cron_cleanup' );
 
 /**
  * Default settings.
@@ -106,6 +130,10 @@ function ch_default_settings() {
 		'gcm_url_passthrough' => true,
 		'gcm_ads_redaction'   => true,
 		'gcm_wait_update'     => 500,
+
+		// Logging
+		'logging_enabled'   => false,
+		'logging_retention' => 90,
 
 		// Blocker
 		'blocker_enabled'  => false,

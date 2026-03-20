@@ -11,8 +11,33 @@ class CH_AJAX {
 		add_action( 'wp_ajax_nopriv_ch_log_consent', array( __CLASS__, 'log_consent' ) );
 		add_action( 'wp_ajax_ch_log_consent', array( __CLASS__, 'log_consent' ) );
 
+		// Diagnostic endpoint (admin only)
+		add_action( 'wp_ajax_ch_debug', array( __CLASS__, 'debug_status' ) );
+
 		// Add nonce to frontend config
 		add_filter( 'ch_frontend_config', array( __CLASS__, 'add_nonce_to_config' ) );
+	}
+
+	/**
+	 * Debug endpoint: check logging status (admin only).
+	 */
+	public static function debug_status() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Unauthorized', 403 );
+		}
+
+		$settings = get_option( 'ch_settings', array() );
+		$table_exists = CH_Database::table_exists();
+		$table_name = CH_Database::table_name();
+		$logs_count = $table_exists ? CH_Database::get_total_logs() : 'N/A';
+
+		wp_send_json_success( array(
+			'table_name'      => $table_name,
+			'table_exists'    => $table_exists,
+			'logging_enabled' => ! empty( $settings['logging_enabled'] ),
+			'logs_count'      => $logs_count,
+			'settings_raw'    => $settings,
+		) );
 	}
 
 	/**

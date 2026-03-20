@@ -36,6 +36,24 @@ class CH_Database {
 	}
 
 	/**
+	 * Check if the consent log table exists.
+	 */
+	public static function table_exists() {
+		global $wpdb;
+		$table = self::table_name();
+		return $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table ) ) === $table;
+	}
+
+	/**
+	 * Ensure table exists, create if missing.
+	 */
+	public static function ensure_table() {
+		if ( ! self::table_exists() ) {
+			self::create_table();
+		}
+	}
+
+	/**
 	 * Drop the consent log table.
 	 */
 	public static function drop_table() {
@@ -53,6 +71,7 @@ class CH_Database {
 	 */
 	public static function log( $type, $categories = array(), $region = 'other' ) {
 		global $wpdb;
+		self::ensure_table();
 		$table = self::table_name();
 
 		// Hash IP (first 3 octets only, not reversible)

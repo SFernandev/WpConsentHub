@@ -107,9 +107,9 @@ class CH_Frontend {
 				),
 			),
 			'logging'  => array(
-				'enabled' => (bool) get_option( 'ch_logging_enabled', false ),
+				'enabled'  => (bool) $s['logging_enabled'],
 				'endpoint' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'ch_logging' ),
+				'nonce'    => wp_create_nonce( 'ch_logging' ),
 			),
 		);
 
