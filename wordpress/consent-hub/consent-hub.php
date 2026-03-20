@@ -28,6 +28,14 @@ require_once CH_PATH . 'includes/class-ajax.php';
 require_once CH_PATH . 'includes/class-dashboard.php';
 
 /**
+ * Load text domain for translations.
+ */
+function ch_load_textdomain() {
+	load_plugin_textdomain( 'consent-hub', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'init', 'ch_load_textdomain' );
+
+/**
  * Initialize plugin.
  */
 function ch_init() {
@@ -74,23 +82,23 @@ function ch_default_settings() {
 		'radius'        => '12px',
 
 		// Categories
-		'cat_analytics_label'   => 'Analítica',
-		'cat_analytics_desc'    => 'Cookies de medición y estadísticas del sitio.',
-		'cat_marketing_label'   => 'Marketing',
-		'cat_marketing_desc'    => 'Cookies para campañas publicitarias y remarketing.',
-		'cat_preferences_label' => 'Preferencias',
-		'cat_preferences_desc'  => 'Cookies que recuerdan ajustes como idioma o región.',
+		'cat_analytics_label'   => __( 'Analítica', 'consent-hub' ),
+		'cat_analytics_desc'    => __( 'Cookies de medición y estadísticas del sitio.', 'consent-hub' ),
+		'cat_marketing_label'   => __( 'Marketing', 'consent-hub' ),
+		'cat_marketing_desc'    => __( 'Cookies para campañas publicitarias y remarketing.', 'consent-hub' ),
+		'cat_preferences_label' => __( 'Preferencias', 'consent-hub' ),
+		'cat_preferences_desc'  => __( 'Cookies que recuerdan ajustes como idioma o región.', 'consent-hub' ),
 
 		// Texts
-		'banner_title'       => 'Este sitio utiliza cookies',
-		'banner_description' => 'Usamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar contenido. Puedes aceptar todas, rechazarlas o configurar tus preferencias.',
-		'btn_accept'         => 'Aceptar todas',
-		'btn_reject'         => 'Rechazar todas',
-		'btn_customize'      => 'Configurar',
-		'prefs_title'        => 'Preferencias de cookies',
-		'prefs_description'  => 'Selecciona qué categorías de cookies deseas permitir. Las cookies funcionales son siempre necesarias.',
-		'btn_save'           => 'Guardar preferencias',
-		'revisit_label'      => 'Cookies',
+		'banner_title'       => __( 'Este sitio utiliza cookies', 'consent-hub' ),
+		'banner_description' => __( 'Usamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar contenido. Puedes aceptar todas, rechazarlas o configurar tus preferencias.', 'consent-hub' ),
+		'btn_accept'         => __( 'Aceptar todas', 'consent-hub' ),
+		'btn_reject'         => __( 'Rechazar todas', 'consent-hub' ),
+		'btn_customize'      => __( 'Configurar', 'consent-hub' ),
+		'prefs_title'        => __( 'Preferencias de cookies', 'consent-hub' ),
+		'prefs_description'  => __( 'Selecciona qué categorías de cookies deseas permitir. Las cookies funcionales son siempre necesarias.', 'consent-hub' ),
+		'btn_save'           => __( 'Guardar preferencias', 'consent-hub' ),
+		'revisit_label'      => __( 'Cookies', 'consent-hub' ),
 
 		// Google Consent Mode
 		'gcm_enabled'         => false,

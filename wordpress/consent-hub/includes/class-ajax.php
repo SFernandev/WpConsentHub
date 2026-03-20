@@ -37,7 +37,7 @@ class CH_AJAX {
 	public static function log_consent() {
 		// Verify nonce
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'ch_logging' ) ) {
-			wp_send_json_error( array( 'message' => 'Invalid nonce' ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Invalid nonce', 'consent-hub' ) ), 403 );
 		}
 
 		// Get settings to check if logging is enabled
@@ -49,7 +49,7 @@ class CH_AJAX {
 		// Validate type
 		$type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
 		if ( ! in_array( $type, array( 'accepted', 'rejected', 'partial' ), true ) ) {
-			wp_send_json_error( array( 'message' => 'Invalid consent type' ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Invalid consent type', 'consent-hub' ) ), 400 );
 		}
 
 		// Parse categories
@@ -70,6 +70,6 @@ class CH_AJAX {
 		// Log it
 		CH_Database::log( $type, $categories, $region );
 
-		wp_send_json_success( array( 'message' => 'Logged' ) );
+		wp_send_json_success( array( 'message' => __( 'Logged', 'consent-hub' ) ) );
 	}
 }
