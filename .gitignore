@@ -127,6 +127,7 @@ test-*.html
 CLAUDE.md
 development-notes.md
 local-test-*.php
+tests/
 
 # =============================================================================
 # SAFE TO COMMIT

@@ -45,9 +45,9 @@
 
 ### WordPress Plugin
 
-1. Download `consent-hub-wp.zip` from [Releases](https://github.com/sfernandev/consent-hub/releases)
+1. Download `plugin-consent-hub.zip` from [Releases](https://github.com/sfernandev/consent-hub/releases)
 2. Go to **Plugins → Add New → Upload Plugin**
-3. Select `consent-hub-wp.zip` and activate
+3. Select `plugin-consent-hub.zip` and activate
 4. Configure in **Settings → ConsentHub**
 
 ### Static Website / Non-WordPress
@@ -56,10 +56,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="consent-hub.css">
+    <link rel="stylesheet" href="vanilla/consent-hub.css">
 </head>
 <body>
-    <script src="consent-hub.min.js"></script>
+    <script src="vanilla/consent-hub.min.js"></script>
     <script>
         ConsentHub.init({
             categories: {
@@ -178,45 +178,49 @@ Table: `wp_ch_consent_log` (created on activation)
 
 ```
 consent-hub/
-├── wordpress/consent-hub/          # Plugin source
-│   ├── consent-hub.php             # Main plugin file
-│   ├── includes/
-│   │   ├── class-frontend.php      # Asset enqueueing + config
-│   │   ├── class-admin.php         # WP admin panel
-│   │   ├── class-dashboard.php     # Metrics dashboard
-│   │   ├── class-database.php      # Logging table
-│   │   ├── class-ajax.php          # Logging endpoint
-│   │   ├── class-geo.php           # Geolocation detection
-│   │   └── class-wp-consent.php    # WP Consent API bridge
-│   └── assets/
-│       ├── consent-hub.js          # Main engine
-│       ├── consent-hub.css         # Styles
-│       ├── dashboard.js            # Chart.js init
-│       ├── dashboard.css           # Dashboard styles
-│       └── admin.css               # WP admin styles
+├── vanilla/                            # Standalone engine (non-WordPress)
+│   ├── consent-hub.js                  # Main engine
+│   ├── consent-hub.min.js              # Minified version
+│   └── consent-hub.css                 # Styles
 │
-├── consent-hub.js                  # Standalone engine
-├── consent-hub.min.js              # Minified version
-├── consent-hub.css                 # Standalone styles
-├── consent-hub-wp.zip              # WordPress plugin package
-└── demo.html                       # Standalone demo
+├── wordpress/consent-hub/              # WordPress plugin source
+│   ├── consent-hub.php                 # Main plugin file
+│   ├── includes/
+│   │   ├── class-frontend.php          # Asset enqueueing + config
+│   │   ├── class-admin.php             # WP admin panel
+│   │   ├── class-dashboard.php         # Metrics dashboard
+│   │   ├── class-database.php          # Logging table
+│   │   ├── class-ajax.php              # Logging endpoint
+│   │   ├── class-geo.php               # Geolocation detection
+│   │   └── class-wp-consent.php        # WP Consent API bridge
+│   ├── assets/
+│   │   ├── consent-hub.min.js          # Engine (synced from vanilla/)
+│   │   ├── consent-hub.css             # Styles (synced from vanilla/)
+│   │   ├── wp-consent-bridge.js        # WP Consent API bridge
+│   │   ├── dashboard.js               # Chart.js init
+│   │   ├── dashboard.css              # Dashboard styles
+│   │   └── admin.css                  # WP admin styles
+│   └── languages/
+│       └── consent-hub.pot             # Translation template
+│
+├── demo.html                           # Standalone demo
+├── demo.css                            # Demo styles
+├── demo.js                             # Demo logic
+└── plugin-consent-hub.zip              # WordPress plugin package
 ```
 
 ### Building
 
 ```bash
-# Regenerate .zip from source
-python3 -c "
-import zipfile, os
-with zipfile.ZipFile('consent-hub-wp.zip', 'w', zipfile.ZIP_DEFLATED) as z:
-    for root, dirs, files in os.walk('wordpress/consent-hub'):
-        for f in files:
-            path = os.path.join(root, f)
-            z.write(path, path)
-"
+# Minify JS
+npx terser vanilla/consent-hub.js -o vanilla/consent-hub.min.js --compress --mangle
 
-# Minify JS (using any JS minifier, e.g., terser, uglify-js)
-npx terser consent-hub.js -o consent-hub.min.js -c -m
+# Sync to WordPress assets
+cp vanilla/consent-hub.min.js wordpress/consent-hub/assets/
+cp vanilla/consent-hub.css wordpress/consent-hub/assets/
+
+# Regenerate plugin zip (PowerShell on Windows)
+cd wordpress && powershell -Command "Compress-Archive -Path 'consent-hub' -DestinationPath '../plugin-consent-hub.zip' -Force"
 ```
 
 ### Requirements
@@ -260,32 +264,15 @@ Free for commercial use, but you must:
 
 ---
 
-## Contributing
-
-We welcome contributions! Please:
-
-1. Fork this repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -m 'Add feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Open a Pull Request
-
-### Code Standards
-
-- PHP: PSR-2
-- JavaScript: ES5, no transpilation
-- CSS: BEM naming, CSS custom properties
-- No frameworks, no dependencies
-
----
-
 ## Changelog
 
 ### v1.4.0-beta (2026-03-20)
 - ✨ Dashboard with consent metrics & 7-day chart
-- ✨ Logging system (local BD, non-reversible hashing)
-- 🐛 Fixed class-frontend.php syntax error
-- 📦 Reorganized folder structure (wordpress/ + standalone)
+- ✨ Logging system (local DB, non-reversible hashing)
+- 🌐 Full i18n support (WPML, Polylang, Loco Translate)
+- ♻️ Externalized all inline CSS/JS (CSP-compatible)
+- 🚚 Restructured project: `vanilla/` folder + `plugin-consent-hub.zip`
+- 🐛 Fixed stale minified JS missing logConsent()
 
 ### v1.3.0 (2026-03-19)
 - ✨ Geolocation detection (Cloudflare, Vercel, etc.)
