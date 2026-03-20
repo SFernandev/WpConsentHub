@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConsentHub v1.3.0 — Demo completa</title>
+  <style>
+    *{margin:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f7f5;color:#1a1a1a;line-height:1.6}
+    header{background:#1a1a1a;color:#fff;padding:40px 24px;text-align:center}
+    header h1{font-size:28px;font-weight:600;margin-bottom:8px}
+    header p{font-size:15px;opacity:.7;max-width:560px;margin:0 auto}
+    .badges{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600}
+    .b1{background:#a3e635;color:#1a1a1a}.b2{background:#fbbf24;color:#1a1a1a}.b3{background:#f87171;color:#fff}.b4{background:#60a5fa;color:#fff}.b5{background:#c084fc;color:#fff}
+    main{max-width:800px;margin:0 auto;padding:32px 24px}
+    .card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:24px;margin-bottom:20px}
+    .card h2{font-size:17px;font-weight:600;margin-bottom:12px}
+    .card p{font-size:14px;color:#555;margin-bottom:12px}
+    code{background:#f0f0ee;padding:2px 6px;border-radius:4px;font-size:13px}
+    .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+    .si{background:#f7f7f5;border-radius:8px;padding:14px 16px}
+    .si .lb{font-size:12px;color:#888;margin-bottom:4px}
+    .si .vl{font-size:16px;font-weight:500}
+    .ok{color:#16a34a}.no{color:#dc2626}.wt{color:#d97706}
+    .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .acts button,.acts select{padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:background .15s;font-family:inherit}
+    .acts button:hover{background:#f0f0ee}
+    .tags{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .tg-card{background:#f7f7f5;border-radius:8px;padding:14px 16px;border-left:3px solid #ccc;transition:border-color .3s}
+    .tg-card.on{border-left-color:#16a34a}
+    .tg-card .nm{font-size:13px;font-weight:500}
+    .tg-card .ct{font-size:11px;color:#888;margin-top:2px}
+    .tg-card .st{font-size:11px;font-weight:500;margin-top:6px}
+    .gcm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+    .gcm-item{background:#f7f7f5;border-radius:8px;padding:12px 14px;text-align:center}
+    .gcm-item .param{font-size:11px;color:#888;margin-bottom:4px;word-break:break-all}
+    .gcm-item .state{font-size:14px;font-weight:600}
+    .granted{color:#16a34a}.denied{color:#dc2626}.pending{color:#d97706}
+    .info-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:#888}
+    .info-row span{background:#f0f0ee;padding:4px 10px;border-radius:6px}
+    .blocked-list{font-size:12px;color:#555;margin-top:8px}
+    .blocked-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0ee}
+    .blocked-item:last-child{border-bottom:none}
+    .blocked-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .blocked-dot.red{background:#dc2626}.blocked-dot.green{background:#16a34a}
+    .blocked-src{font-family:"SF Mono",Consolas,monospace;font-size:11px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+    .blocked-cat{font-size:11px;font-weight:500;flex-shrink:0}
+    .geo-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .geo-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600}
+    .geo-eu{background:#dbeafe;color:#1e40af}.geo-ccpa{background:#fef3c7;color:#92400e}.geo-other{background:#f0f0ee;color:#555}.geo-off{background:#f0f0ee;color:#999}
+    .log{background:#1a1a1a;color:#a3e635;border-radius:8px;padding:16px;font-family:"SF Mono",Consolas,monospace;font-size:12px;max-height:280px;overflow-y:auto;line-height:1.9}
+    .log div{border-bottom:1px solid #222}
+    .lt{color:#555}.le{color:#60a5fa}.ld{color:#888}.lg{color:#facc15}.lr{color:#f87171}.lp{color:#c084fc}
+    footer{text-align:center;padding:32px 24px;font-size:13px;color:#999}
+  </style>
+  <style>
+/* ══════════════════════════════════════════
+   ConsentHub v1.0.0 — Styles
+   CSS nativo con custom properties.
+   ══════════════════════════════════════════ */
+
+/* ── Theme defaults (overridable via JS on #ch-root) ── */
+
+:root {
+  --ch-primary: #1a1a1a;
+  --ch-primary-text: #ffffff;
+  --ch-bg: #ffffff;
+  --ch-text: #1a1a1a;
+  --ch-text-secondary: #555555;
+  --ch-border: #e0e0e0;
+  --ch-toggle-on: #1a1a1a;
+  --ch-toggle-off: #cccccc;
+  --ch-radius: 12px;
+  --ch-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Overlay ── */
+
+#ch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999998;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#ch-overlay.ch-v {
+  opacity: 1;
+}
+
+/* ── Banner ── */
+
+#ch-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 999999;
+  font-family: var(--ch-font);
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.35s, transform 0.35s;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+#ch-banner *,
+#ch-prefs * {
+  box-sizing: border-box;
+}
+
+#ch-banner.ch-bottom {
+  bottom: 0;
+  padding: 16px;
+}
+
+#ch-banner.ch-top {
+  top: 0;
+  padding: 16px;
+  transform: translateY(-20px);
+}
+
+#ch-banner.ch-center {
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  transform: scale(0.95);
+}
+
+#ch-banner.ch-v {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ── Banner box ── */
+
+.ch-box {
+  background: var(--ch-bg);
+  color: var(--ch-text);
+  border: 1px solid var(--ch-border);
+  border-radius: var(--ch-radius);
+  padding: 24px 28px;
+  max-width: 640px;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+#ch-banner.ch-center .ch-box {
+  max-width: 520px;
+}
+
+/* ── Typography ── */
+
+.ch-t {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ch-text);
+}
+
+.ch-d {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: var(--ch-text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Buttons ── */
+
+.ch-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ch-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s, transform 0.1s;
+  font-family: var(--ch-font);
+  line-height: 1.3;
+}
+
+.ch-btn:hover {
+  opacity: 0.85;
+}
+
+.ch-btn:active {
+  transform: scale(0.97);
+}
+
+.ch-btn:focus-visible {
+  outline: 2px solid var(--ch-primary);
+  outline-offset: 2px;
+}
+
+.ch-bp {
+  background: var(--ch-primary);
+  color: var(--ch-primary-text);
+}
+
+.ch-bs {
+  background: transparent;
+  color: var(--ch-text);
+  border: 1px solid var(--ch-border);
+}
+
+/* ── Preferences panel ── */
+
+#ch-prefs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-family: var(--ch-font);
+  font-size: 15px;
+  line-height: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  box-sizing: border-box;
+}
+
+#ch-prefs.ch-v {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ch-pbox {
+  background: var(--ch-bg);
+  color: var(--ch-text);
+  border: 1px solid var(--ch-border);
+  border-radius: var(--ch-radius);
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(12px);
+  transition: transform 0.3s;
+}
+
+#ch-prefs.ch-v .ch-pbox {
+  transform: translateY(0);
+}
+
+/* ── Category rows ── */
+
+.ch-cat {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ch-border);
+}
+
+.ch-cat:last-of-type {
+  border-bottom: none;
+}
+
+.ch-ci {
+  flex: 1;
+  padding-right: 16px;
+}
+
+.ch-cl {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 2px;
+  color: var(--ch-text);
+}
+
+.ch-cd {
+  font-size: 12px;
+  color: var(--ch-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Toggle switch ── */
+
+.ch-tg {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ch-tg input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.ch-tr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--ch-toggle-off);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ch-tg input:checked + .ch-tr {
+  background: var(--ch-toggle-on);
+}
+
+.ch-tk {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+.ch-tg input:checked ~ .ch-tk {
+  transform: translateX(20px);
+}
+
+.ch-tg input:disabled + .ch-tr {
+  background: var(--ch-toggle-on);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ch-tg input:focus-visible + .ch-tr {
+  outline: 2px solid var(--ch-primary);
+  outline-offset: 2px;
+}
+
+/* ── Preferences buttons spacing ── */
+
+.ch-pbtns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* ── Revisit button ── */
+
+#ch-revisit {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 999997;
+  background: var(--ch-primary);
+  color: var(--ch-primary-text);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--ch-font);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: opacity 0.3s, transform 0.2s;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+#ch-revisit.ch-v {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+#ch-revisit:hover {
+  opacity: 0.85;
+}
+
+#ch-revisit:focus-visible {
+  outline: 2px solid var(--ch-primary);
+  outline-offset: 2px;
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 480px) {
+  .ch-box {
+    padding: 20px;
+  }
+
+  .ch-btns,
+  .ch-pbtns {
+    flex-direction: column;
+  }
+
+  .ch-pbox {
+    padding: 20px;
+  }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ConsentHub — Demo completa</h1>
+  <p>Motor de consentimiento universal. Todas las fases integradas.</p>
+  <div class="badges">
+    <span class="badge b1">F1 Engine</span>
+    <span class="badge b2">F2 GCM v2</span>
+    <span class="badge b3">F3 Blocker</span>
+    <span class="badge b4">F4 WordPress</span>
+    <span class="badge b5">F5 Geo</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- GEO -->
+  <div class="card">
+    <h2>Geolocalización</h2>
+    <p>Simula la región del visitante y observa cómo cambia el comportamiento del banner.</p>
+    <div class="geo-bar">
+      <div class="geo-badge geo-off" id="geo-badge">Geo desactivado</div>
+      <select id="geo-select" onchange="reloadWithGeo(this.value)">
+        <option value="">Sin geo (opt-in global)</option>
+        <option value="eu">UE/EEA → Opt-in (GDPR)</option>
+        <option value="ccpa">EE.UU. → Opt-out (CCPA)</option>
+        <option value="other">Resto → Ocultar banner</option>
+      </select>
+    </div>
+    <div class="info-row" id="geo-info">
+      <span id="geo-rule">Regla: optin</span>
+      <span id="geo-behavior">Banner: visible, todo denegado</span>
+    </div>
+  </div>
+
+  <!-- GCM -->
+  <div class="card">
+    <h2>Google Consent Mode v2</h2>
+    <div class="gcm-grid">
+      <div class="gcm-item"><div class="param">analytics_storage</div><div class="state denied" id="gcm-as">denied</div></div>
+      <div class="gcm-item"><div class="param">ad_storage</div><div class="state denied" id="gcm-ads">denied</div></div>
+      <div class="gcm-item"><div class="param">ad_user_data</div><div class="state denied" id="gcm-aud">denied</div></div>
+      <div class="gcm-item"><div class="param">ad_personalization</div><div class="state denied" id="gcm-ap">denied</div></div>
+    </div>
+    <div class="info-row">
+      <span>Modo: advanced</span>
+      <span id="gcm-dl-count">dataLayer: 0</span>
+    </div>
+  </div>
+
+  <!-- Consent state -->
+  <div class="card">
+    <h2>Estado del consentimiento</h2>
+    <div class="sg">
+      <div class="si"><div class="lb">Funcionales</div><div class="vl ok">Siempre activas</div></div>
+      <div class="si"><div class="lb">Analítica</div><div class="vl wt" id="st-analytics">Pendiente</div></div>
+      <div class="si"><div class="lb">Marketing</div><div class="vl wt" id="st-marketing">Pendiente</div></div>
+      <div class="si"><div class="lb">Preferencias</div><div class="vl wt" id="st-preferences">Pendiente</div></div>
+    </div>
+    <div class="acts">
+      <button onclick="ConsentHub.showBanner()">Mostrar banner</button>
+      <button onclick="ConsentHub.showPreferences()">Preferencias</button>
+      <button onclick="ConsentHub.reset()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Blocker -->
+  <div class="card">
+    <h2>Script blocker</h2>
+    <div id="blocked-list" class="blocked-list"><div style="color:#888;font-style:italic">Ningún script interceptado.</div></div>
+    <div class="acts">
+      <button onclick="simulateInject('analytics')">Inyectar analytics</button>
+      <button onclick="simulateInject('marketing')">Inyectar marketing</button>
+    </div>
+  </div>
+
+  <!-- Static scripts -->
+  <div class="card">
+    <h2>Scripts estáticos</h2>
+    <div class="tags">
+      <div class="tg-card" id="tg-gtm"><div class="nm">GTM</div><div class="ct">analytics</div><div class="st no" id="ts-gtm">Bloqueado</div></div>
+      <div class="tg-card" id="tg-gads"><div class="nm">Google Ads</div><div class="ct">marketing</div><div class="st no" id="ts-gads">Bloqueado</div></div>
+      <div class="tg-card" id="tg-hotjar"><div class="nm">Hotjar</div><div class="ct">analytics</div><div class="st no" id="ts-hotjar">Bloqueado</div></div>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="card">
+    <h2>Log de eventos</h2>
+    <div class="log" id="clog"></div>
+  </div>
+
+</main>
+
+<footer>ConsentHub v1.3.0 — Fases 1-5 completas · CSS nativo · Cero dependencias · 100% self-hosted</footer>
+
+<script>
+/**
+ * ConsentHub v1.3.0
+ * Motor de consentimiento de cookies universal.
+ * Zero dependencias · CSS nativo externo · Compatible con cualquier web.
+ * Google Consent Mode v2 · Script blocker · Geolocalización.
+ *
+ * Requiere: consent-hub.css
+ *
+ * API:
+ *   ConsentHub.init(config)
+ *   ConsentHub.hasConsent(category)
+ *   ConsentHub.getConsent()
+ *   ConsentHub.showBanner()
+ *   ConsentHub.showPreferences()
+ *   ConsentHub.reset()
+ *   ConsentHub.on(event, fn)
+ *   ConsentHub.off(event, fn)
+ */
+;(function (root) {
+  'use strict';
+
+  var VERSION = '1.3.0';
+
+  var defaults = {
+    categories: {
+      analytics: { label: 'Analítica', description: 'Cookies de medición y estadísticas del sitio.', default: false },
+      marketing: { label: 'Marketing', description: 'Cookies para campañas publicitarias y remarketing.', default: false },
+      preferences: { label: 'Preferencias', description: 'Cookies que recuerdan ajustes como idioma o región.', default: false }
+    },
+    texts: {
+      banner: {
+        title: 'Este sitio utiliza cookies',
+        description: 'Usamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar contenido. Puedes aceptar todas, rechazarlas o configurar tus preferencias.',
+        acceptAll: 'Aceptar todas',
+        rejectAll: 'Rechazar todas',
+        customize: 'Configurar'
+      },
+      preferences: {
+        title: 'Preferencias de cookies',
+        description: 'Selecciona qué categorías de cookies deseas permitir. Las cookies funcionales son siempre necesarias.',
+        functional: 'Funcionales',
+        functionalDesc: 'Necesarias para el funcionamiento básico del sitio. Siempre activas.',
+        save: 'Guardar preferencias',
+        acceptAll: 'Aceptar todas'
+      },
+      revisit: 'Cookies'
+    },
+    position: 'bottom',
+    theme: {
+      primary: '#1a1a1a',
+      primaryText: '#ffffff',
+      background: '#ffffff',
+      text: '#1a1a1a',
+      textSecondary: '#555555',
+      border: '#e0e0e0',
+      toggleOn: '#1a1a1a',
+      toggleOff: '#cccccc',
+      radius: '12px'
+    },
+    gcm: {
+      enabled: false,
+      mode: 'advanced',           // 'advanced' | 'basic'
+      urlPassthrough: true,
+      adsDataRedaction: true,
+      waitForUpdate: 500,
+      categoryMap: {
+        analytics_storage: 'analytics',
+        ad_storage: 'marketing',
+        ad_user_data: 'marketing',
+        ad_personalization: 'marketing'
+      }
+    },
+    blocker: {
+      enabled: false,
+      patterns: {
+        analytics: [
+          'googletagmanager.com/gtm.js',
+          'google-analytics.com/analytics.js',
+          'googletagmanager.com/gtag/js',
+          'static.hotjar.com',
+          'clarity.ms/tag',
+          'plausible.io',
+          'cdn.mxpnl.com'
+        ],
+        marketing: [
+          'connect.facebook.net',
+          'snap.licdn.com',
+          'ads.linkedin.com',
+          'googleadservices.com/pagead',
+          'googlesyndication.com',
+          'doubleclick.net',
+          'tiktok.com/i18n/pixel',
+          'ads-twitter.com',
+          'pinterest.com/ct.html'
+        ],
+        preferences: []
+      }
+    },
+    cookieName: 'ch_consent',
+    cookieDays: 365,
+    cookieDomain: '',
+    geo: {
+      enabled: false,
+      region: '',                 // 'eu' | 'ccpa' | 'other' | '' (auto-detect)
+      rules: {
+        eu:    'optin',           // Show banner, require explicit consent
+        ccpa:  'optout',          // Show banner with opt-out, allow by default
+        other: 'hide'             // 'hide' = no banner | 'optin' | 'optout'
+      }
+    },
+    onConsent: null,
+    autoShow: true
+  };
+
+  var config = {}, consent = null, listeners = {}, els = {};
+
+  function merge(t, s) {
+    var r = {};
+    for (var k in t) {
+      if (t.hasOwnProperty(k)) {
+        if (s && s.hasOwnProperty(k) && typeof t[k] === 'object' && t[k] !== null && !Array.isArray(t[k]))
+          r[k] = merge(t[k], s[k]);
+        else r[k] = (s && s.hasOwnProperty(k)) ? s[k] : t[k];
+      }
+    }
+    if (s) { for (var j in s) { if (s.hasOwnProperty(j) && !t.hasOwnProperty(j)) r[j] = s[j]; } }
+    return r;
+  }
+
+  function setCookie(n, v, d, dm) {
+    var dt = new Date(); dt.setTime(dt.getTime() + (d * 864e5));
+    var p = n + '=' + encodeURIComponent(JSON.stringify(v)) + ';expires=' + dt.toUTCString() + ';path=/;SameSite=Lax';
+    if (dm) p += ';domain=' + dm;
+    document.cookie = p;
+  }
+
+  function getCookie(n) {
+    var m = document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)'));
+    if (!m) return null;
+    try { return JSON.parse(decodeURIComponent(m[1])); } catch (e) { return null; }
+  }
+
+  function deleteCookie(n, dm) {
+    document.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax' + (dm ? ';domain=' + dm : '');
+  }
+
+  function emit(type, detail) {
+    if (listeners[type]) {
+      for (var i = 0; i < listeners[type].length; i++) { try { listeners[type][i](detail); } catch (e) {} }
+    }
+    try { document.dispatchEvent(new CustomEvent('consenthub:' + type, { detail: detail })); } catch (e) {}
+  }
+
+  function h(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      for (var k in attrs) {
+        if (k === 'events') { for (var e in attrs[k]) node.addEventListener(e, attrs[k][e]); }
+        else node.setAttribute(k, attrs[k]);
+      }
+    }
+    if (children) {
+      if (typeof children === 'string') node.textContent = children;
+      else if (Array.isArray(children)) {
+        for (var i = 0; i < children.length; i++) { if (children[i]) node.appendChild(children[i]); }
+      }
+    }
+    return node;
+  }
+
+  function raf(fn) { requestAnimationFrame(function () { requestAnimationFrame(fn); }); }
+  function rm(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
+
+  function applyTheme() {
+    var t = config.theme, r = document.documentElement;
+    r.style.setProperty('--ch-primary', t.primary);
+    r.style.setProperty('--ch-primary-text', t.primaryText);
+    r.style.setProperty('--ch-bg', t.background);
+    r.style.setProperty('--ch-text', t.text);
+    r.style.setProperty('--ch-text-secondary', t.textSecondary);
+    r.style.setProperty('--ch-border', t.border);
+    r.style.setProperty('--ch-toggle-on', t.toggleOn);
+    r.style.setProperty('--ch-toggle-off', t.toggleOff);
+    r.style.setProperty('--ch-radius', t.radius);
+  }
+
+  /* ── Google Consent Mode v2 ── */
+
+  function gcmInit() {
+    if (!config.gcm.enabled) return;
+
+    root.dataLayer = root.dataLayer || [];
+    if (typeof root.gtag !== 'function') {
+      root.gtag = function () { root.dataLayer.push(arguments); };
+    }
+
+    var state = gcmBuildState(consent);
+
+    if (config.gcm.waitForUpdate > 0) {
+      state.wait_for_update = config.gcm.waitForUpdate;
+    }
+
+    root.gtag('consent', 'default', state);
+
+    if (config.gcm.urlPassthrough) {
+      root.gtag('set', 'url_passthrough', true);
+    }
+    if (config.gcm.adsDataRedaction) {
+      root.gtag('set', 'ads_data_redaction', true);
+    }
+
+    emit('gcm:default', state);
+  }
+
+  function gcmUpdate() {
+    if (!config.gcm.enabled) return;
+    if (typeof root.gtag !== 'function') return;
+
+    var state = gcmBuildState(consent);
+    root.gtag('consent', 'update', state);
+
+    root.dataLayer = root.dataLayer || [];
+    root.dataLayer.push({ event: 'consent_update', consent_state: state });
+
+    emit('gcm:update', state);
+  }
+
+  function gcmBuildState(consentData) {
+    var map = config.gcm.categoryMap;
+    var params = ['analytics_storage', 'ad_storage', 'ad_user_data', 'ad_personalization'];
+    var state = {};
+
+    for (var i = 0; i < params.length; i++) {
+      var cat = map[params[i]];
+      state[params[i]] = (consentData && consentData.categories && consentData.categories[cat]) ? 'granted' : 'denied';
+    }
+
+    state.functionality_storage = 'granted';
+    state.security_storage = 'granted';
+
+    return state;
+  }
+
+  /* ── Banner ── */
+
+  function renderBanner() {
+    if (els.banner) return;
+    var txt = config.texts.banner;
+    els.banner = h('div', { id: 'ch-banner', class: 'ch-' + config.position }, [
+      h('div', { class: 'ch-box', role: 'dialog', 'aria-label': txt.title }, [
+        h('h3', { class: 'ch-t' }, txt.title),
+        h('p', { class: 'ch-d' }, txt.description),
+        h('div', { class: 'ch-btns' }, [
+          h('button', { class: 'ch-btn ch-bp', events: { click: acceptAll } }, txt.acceptAll),
+          h('button', { class: 'ch-btn ch-bs', events: { click: rejectAll } }, txt.rejectAll),
+          h('button', { class: 'ch-btn ch-bs', events: { click: openPrefs } }, txt.customize)
+        ])
+      ])
+    ]);
+    document.body.appendChild(els.banner);
+    if (config.position === 'center') {
+      els.overlay = h('div', { id: 'ch-overlay' });
+      document.body.appendChild(els.overlay);
+    }
+    raf(function () {
+      if (els.banner) els.banner.classList.add('ch-v');
+      if (els.overlay) els.overlay.classList.add('ch-v');
+    });
+    emit('banner:show');
+  }
+
+  function hideBanner() {
+    if (!els.banner) return;
+    els.banner.classList.remove('ch-v');
+    if (els.overlay) els.overlay.classList.remove('ch-v');
+    setTimeout(function () { rm(els.banner); rm(els.overlay); els.banner = els.overlay = null; }, 350);
+  }
+
+  function catRow(label, desc, key, checked, disabled) {
+    var inp = h('input', { type: 'checkbox', 'data-category': key, 'aria-label': label });
+    if (checked) inp.checked = true;
+    if (disabled) inp.disabled = true;
+    return h('div', { class: 'ch-cat' }, [
+      h('div', { class: 'ch-ci' }, [h('p', { class: 'ch-cl' }, label), h('p', { class: 'ch-cd' }, desc)]),
+      h('label', { class: 'ch-tg' }, [inp, h('span', { class: 'ch-tr' }), h('span', { class: 'ch-tk' })])
+    ]);
+  }
+
+  function renderPrefs() {
+    if (els.prefs) return;
+    var txt = config.texts.preferences, cats = config.categories, items = [];
+    items.push(catRow(txt.functional, txt.functionalDesc, 'functional', true, true));
+    for (var key in cats) {
+      if (cats.hasOwnProperty(key)) {
+        items.push(catRow(cats[key].label, cats[key].description, key,
+          consent ? consent.categories[key] : cats[key].default, false));
+      }
+    }
+    var inner = h('div', { class: 'ch-pbox', role: 'dialog', 'aria-label': txt.title, 'aria-modal': 'true' },
+      [h('h3', { class: 'ch-t' }, txt.title), h('p', { class: 'ch-d' }, txt.description)]
+        .concat(items)
+        .concat([h('div', { class: 'ch-pbtns' }, [
+          h('button', { class: 'ch-btn ch-bp', events: { click: savePrefs } }, txt.save),
+          h('button', { class: 'ch-btn ch-bs', events: { click: acceptAllPrefs } }, txt.acceptAll)
+        ])])
+    );
+    els.prefsOv = h('div', { id: 'ch-overlay', events: { click: hidePrefs } });
+    els.prefs = h('div', { id: 'ch-prefs' }, [inner]);
+    document.body.appendChild(els.prefsOv);
+    document.body.appendChild(els.prefs);
+    raf(function () {
+      if (els.prefs) els.prefs.classList.add('ch-v');
+      if (els.prefsOv) els.prefsOv.classList.add('ch-v');
+    });
+    emit('preferences:show');
+  }
+
+  function hidePrefs() {
+    if (!els.prefs) return;
+    els.prefs.classList.remove('ch-v');
+    if (els.prefsOv) els.prefsOv.classList.remove('ch-v');
+    setTimeout(function () { rm(els.prefs); rm(els.prefsOv); els.prefs = els.prefsOv = null; }, 350);
+  }
+
+  function savePrefs() {
+    var categories = {}, inputs = document.querySelectorAll('#ch-prefs input[data-category]');
+    for (var i = 0; i < inputs.length; i++) {
+      var cat = inputs[i].getAttribute('data-category');
+      if (cat !== 'functional') categories[cat] = inputs[i].checked;
+    }
+    saveConsent(categories); hidePrefs();
+  }
+
+  function acceptAllPrefs() {
+    var c = {}; for (var k in config.categories) { if (config.categories.hasOwnProperty(k)) c[k] = true; }
+    saveConsent(c); hidePrefs();
+  }
+
+  function renderRevisit() {
+    if (els.revisit) return;
+    els.revisit = h('button', { id: 'ch-revisit', 'aria-label': config.texts.revisit,
+      events: { click: openPrefs } }, config.texts.revisit);
+    document.body.appendChild(els.revisit);
+  }
+
+  function showRevisit() {
+    if (!els.revisit) renderRevisit();
+    raf(function () { if (els.revisit) els.revisit.classList.add('ch-v'); });
+  }
+
+  function hideRevisit() { if (els.revisit) els.revisit.classList.remove('ch-v'); }
+
+  function acceptAll() {
+    var c = {}; for (var k in config.categories) { if (config.categories.hasOwnProperty(k)) c[k] = true; }
+    saveConsent(c);
+  }
+
+  function rejectAll() {
+    var c = {}; for (var k in config.categories) { if (config.categories.hasOwnProperty(k)) c[k] = false; }
+    saveConsent(c);
+  }
+
+  function saveConsent(categories) {
+    consent = { categories: categories, timestamp: new Date().toISOString(), version: VERSION };
+    setCookie(config.cookieName, consent, config.cookieDays, config.cookieDomain);
+    hideBanner(); showRevisit(); applyConsent(); gcmUpdate();
+    emit('consent', consent);
+    if (typeof config.onConsent === 'function') config.onConsent(consent);
+  }
+
+  function applyConsent() {
+    if (!consent) return;
+    for (var key in consent.categories) {
+      if (consent.categories.hasOwnProperty(key) && consent.categories[key]) unblockScripts(key);
+    }
+  }
+
+  function unblockScripts(category) {
+    var scripts = document.querySelectorAll('script[type="text/plain"][data-consent="' + category + '"]');
+    for (var i = 0; i < scripts.length; i++) {
+      var orig = scripts[i], nu = document.createElement('script');
+      if (orig.src) nu.src = orig.src; else nu.textContent = orig.textContent;
+      for (var j = 0; j < orig.attributes.length; j++) {
+        var a = orig.attributes[j].name;
+        if (a !== 'type' && a !== 'data-consent') nu.setAttribute(a, orig.attributes[j].value);
+      }
+      orig.parentNode.replaceChild(nu, orig);
+    }
+    emit('scripts:unblocked', { category: category });
+
+    // Also unblock iframes for this category
+    var iframes = document.querySelectorAll('iframe[data-consent="' + category + '"][data-src]');
+    for (var k = 0; k < iframes.length; k++) {
+      iframes[k].src = iframes[k].getAttribute('data-src');
+      iframes[k].removeAttribute('data-src');
+    }
+  }
+
+  /* ── Intelligent script blocker (MutationObserver) ── */
+
+  var observer = null;
+  var blockedQueue = [];
+
+  function matchPattern(src, patterns) {
+    if (!src) return false;
+    for (var i = 0; i < patterns.length; i++) {
+      if (src.indexOf(patterns[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function categorizeScript(src) {
+    if (!src || !config.blocker.enabled) return null;
+    var pats = config.blocker.patterns;
+    for (var cat in pats) {
+      if (pats.hasOwnProperty(cat) && matchPattern(src, pats[cat])) return cat;
+    }
+    return null;
+  }
+
+  function interceptNode(node) {
+    // Handle scripts
+    if (node.tagName === 'SCRIPT') {
+      // Skip if already managed by data-consent
+      if (node.getAttribute('data-consent')) return;
+      // Skip inline scripts without src
+      if (!node.src) return;
+
+      var cat = categorizeScript(node.src);
+      if (!cat) return;
+
+      // If consent already granted, let it through
+      if (consent && consent.categories && consent.categories[cat]) return;
+
+      // Block: replace with inert placeholder
+      var placeholder = document.createElement('script');
+      placeholder.type = 'text/plain';
+      placeholder.setAttribute('data-consent', cat);
+      placeholder.setAttribute('data-blocked-src', node.src);
+      placeholder.src = '';
+
+      // Copy non-critical attributes
+      for (var i = 0; i < node.attributes.length; i++) {
+        var a = node.attributes[i].name;
+        if (a !== 'src' && a !== 'type' && a !== 'data-consent' && a !== 'data-blocked-src') {
+          placeholder.setAttribute(a, node.attributes[i].value);
+        }
+      }
+
+      if (node.parentNode) {
+        node.parentNode.replaceChild(placeholder, node);
+      }
+
+      blockedQueue.push({ category: cat, src: node.src, node: placeholder });
+      emit('blocker:blocked', { category: cat, src: node.src });
+      return;
+    }
+
+    // Handle iframes (YouTube, Facebook, etc.)
+    if (node.tagName === 'IFRAME') {
+      if (node.getAttribute('data-consent')) return;
+      var iframeSrc = node.src || node.getAttribute('data-src');
+      if (!iframeSrc) return;
+
+      var iCat = categorizeScript(iframeSrc);
+      if (!iCat) return;
+      if (consent && consent.categories && consent.categories[iCat]) return;
+
+      node.setAttribute('data-src', iframeSrc);
+      node.setAttribute('data-consent', iCat);
+      node.removeAttribute('src');
+      emit('blocker:blocked', { category: iCat, src: iframeSrc, type: 'iframe' });
+    }
+  }
+
+  function blockerInit() {
+    if (!config.blocker.enabled) return;
+    if (typeof MutationObserver === 'undefined') return;
+
+    observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var added = mutations[i].addedNodes;
+        for (var j = 0; j < added.length; j++) {
+          var node = added[j];
+          if (node.nodeType !== 1) continue;
+          interceptNode(node);
+          // Also check children (e.g. a div with scripts inside)
+          if (node.querySelectorAll) {
+            var nested = node.querySelectorAll('script[src], iframe[src]');
+            for (var k = 0; k < nested.length; k++) interceptNode(nested[k]);
+          }
+        }
+      }
+    });
+
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    emit('blocker:init', { patterns: Object.keys(config.blocker.patterns) });
+  }
+
+  function flushBlockedQueue(category) {
+    var remaining = [];
+    for (var i = 0; i < blockedQueue.length; i++) {
+      var item = blockedQueue[i];
+      if (item.category === category) {
+        // Re-inject as real script
+        var nu = document.createElement('script');
+        nu.src = item.src;
+        var placeholder = item.node;
+        for (var j = 0; j < placeholder.attributes.length; j++) {
+          var a = placeholder.attributes[j].name;
+          if (a !== 'type' && a !== 'data-consent' && a !== 'data-blocked-src' && a !== 'src') {
+            nu.setAttribute(a, placeholder.attributes[j].value);
+          }
+        }
+        if (placeholder.parentNode) {
+          placeholder.parentNode.replaceChild(nu, placeholder);
+        }
+        emit('blocker:released', { category: category, src: item.src });
+      } else {
+        remaining.push(item);
+      }
+    }
+    blockedQueue = remaining;
+  }
+
+  // Patch applyConsent to also flush blocked queue
+  var _origApplyConsent = applyConsent;
+  applyConsent = function () {
+    _origApplyConsent();
+    if (!consent || !config.blocker.enabled) return;
+    for (var key in consent.categories) {
+      if (consent.categories.hasOwnProperty(key) && consent.categories[key]) {
+        flushBlockedQueue(key);
+      }
+    }
+  };
+
+  function openPrefs() { hideBanner(); hideRevisit(); renderPrefs(); }
+
+  /* ── Geo-based consent behavior ── */
+
+  var geoRegion = '';
+
+  function getGeoRule() {
+    if (!config.geo.enabled) return 'optin';
+    var region = config.geo.region || 'other';
+    geoRegion = region;
+    var rule = config.geo.rules[region];
+    return rule || 'optin';
+  }
+
+  function geoAutoConsent(rule) {
+    // For opt-out and hide: grant all by default
+    if (rule === 'optout' || rule === 'hide') {
+      var c = {};
+      for (var k in config.categories) {
+        if (config.categories.hasOwnProperty(k)) c[k] = true;
+      }
+      consent = { categories: c, timestamp: new Date().toISOString(), version: VERSION, geo: geoRegion, auto: true };
+      setCookie(config.cookieName, consent, config.cookieDays, config.cookieDomain);
+      applyConsent(); gcmUpdate();
+      emit('geo:auto', { region: geoRegion, rule: rule, consent: consent });
+      return true;
+    }
+    return false;
+  }
+
+  root.ConsentHub = {
+    init: function (userConfig) {
+      config = merge(defaults, userConfig || {});
+      applyTheme();
+      consent = getCookie(config.cookieName);
+      gcmInit();
+      blockerInit();
+
+      if (consent && consent.version === VERSION) {
+        // Existing consent — apply and show revisit
+        applyConsent(); gcmUpdate(); showRevisit();
+        emit('consent:existing', consent);
+      } else {
+        // No consent yet — check geo rules
+        var rule = getGeoRule();
+        emit('geo:detected', { region: geoRegion, rule: rule });
+
+        if (rule === 'hide') {
+          // No banner, grant all silently
+          geoAutoConsent(rule);
+        } else if (rule === 'optout') {
+          // Grant all by default, but show banner with opt-out option
+          geoAutoConsent(rule);
+          if (config.autoShow) {
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderBanner);
+            else renderBanner();
+          }
+          showRevisit();
+        } else {
+          // opt-in (default): show banner, deny until explicit consent
+          if (config.autoShow) {
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderBanner);
+            else renderBanner();
+          }
+        }
+      }
+    },
+    hasConsent: function (cat) {
+      if (!consent) return false;
+      if (cat === 'functional') return true;
+      return consent.categories[cat] === true;
+    },
+    getConsent: function () { return consent ? JSON.parse(JSON.stringify(consent)) : null; },
+    showBanner: function () { hideRevisit(); renderBanner(); },
+    showPreferences: openPrefs,
+    reset: function () {
+      deleteCookie(config.cookieName, config.cookieDomain);
+      consent = null; hideBanner(); hidePrefs(); hideRevisit(); gcmUpdate();
+      setTimeout(renderBanner, 400);
+      emit('consent:reset');
+    },
+    on: function (evt, fn) { if (!listeners[evt]) listeners[evt] = []; listeners[evt].push(fn); },
+    off: function (evt, fn) { if (!listeners[evt]) return; listeners[evt] = listeners[evt].filter(function (f) { return f !== fn; }); },
+    getRegion: function () { return geoRegion; },
+    version: VERSION
+  };
+
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- Static blocked scripts -->
+<script type="text/plain" data-consent="analytics">
+  document.getElementById('tg-gtm').classList.add('on');
+  document.getElementById('ts-gtm').textContent='Cargado';
+  document.getElementById('ts-gtm').className='st ok';
+</script>
+<script type="text/plain" data-consent="marketing">
+  document.getElementById('tg-gads').classList.add('on');
+  document.getElementById('ts-gads').textContent='Cargado';
+  document.getElementById('ts-gads').className='st ok';
+</script>
+<script type="text/plain" data-consent="analytics">
+  document.getElementById('tg-hotjar').classList.add('on');
+  document.getElementById('ts-hotjar').textContent='Cargado';
+  document.getElementById('ts-hotjar').className='st ok';
+</script>
+
+<script>
+(function(){
+  var clog = document.getElementById('clog');
+  var blockedListEl = document.getElementById('blocked-list');
+  var dlCount = 0, blockedItems = [];
+
+  // Get geo from URL param for simulation
+  var urlParams = new URLSearchParams(window.location.search);
+  var simGeo = urlParams.get('geo') || '';
+
+  function log(e, d, type) {
+    var t = new Date();
+    var ts = [t.getHours(), t.getMinutes(), t.getSeconds()].map(function(n){ return String(n).padStart(2,'0'); }).join(':');
+    var div = document.createElement('div');
+    var clsMap = { gcm:'lg', blocker:'lr', geo:'lp' };
+    var cls = clsMap[type] || 'le';
+    div.innerHTML = '<span class="lt">' + ts + '</span> <span class="' + cls + '">' + e + '</span>' + (d ? ' <span class="ld">' + JSON.stringify(d) + '</span>' : '');
+    clog.appendChild(div);
+    clog.scrollTop = clog.scrollHeight;
+  }
+
+  function updateConsentUI() {
+    var cats = ['analytics', 'marketing', 'preferences'];
+    var c = ConsentHub.getConsent();
+    for (var i = 0; i < cats.length; i++) {
+      var el = document.getElementById('st-' + cats[i]);
+      if (!c) { el.textContent = 'Pendiente'; el.className = 'vl wt'; }
+      else if (c.categories[cats[i]]) { el.textContent = 'Permitido'; el.className = 'vl ok'; }
+      else { el.textContent = 'Denegado'; el.className = 'vl no'; }
+    }
+  }
+
+  function updateGCMUI(state) {
+    var map = { analytics_storage:'gcm-as', ad_storage:'gcm-ads', ad_user_data:'gcm-aud', ad_personalization:'gcm-ap' };
+    for (var p in map) {
+      if (state && state[p]) {
+        var el = document.getElementById(map[p]);
+        el.textContent = state[p]; el.className = 'state ' + state[p];
+      }
+    }
+  }
+
+  function updateGeoUI(region, rule) {
+    var badge = document.getElementById('geo-badge');
+    var ruleEl = document.getElementById('geo-rule');
+    var behEl = document.getElementById('geo-behavior');
+    var sel = document.getElementById('geo-select');
+
+    if (!region) {
+      badge.textContent = 'Geo desactivado'; badge.className = 'geo-badge geo-off';
+      ruleEl.textContent = 'Regla: optin (default)';
+      behEl.textContent = 'Banner visible, todo denegado hasta consentimiento';
+    } else if (region === 'eu') {
+      badge.textContent = 'UE/EEA'; badge.className = 'geo-badge geo-eu';
+      ruleEl.textContent = 'Regla: optin (GDPR)';
+      behEl.textContent = 'Banner visible, todo denegado hasta consentimiento';
+    } else if (region === 'ccpa') {
+      badge.textContent = 'EE.UU. (CCPA)'; badge.className = 'geo-badge geo-ccpa';
+      ruleEl.textContent = 'Regla: optout';
+      behEl.textContent = 'Todo permitido, banner con opción de rechazar';
+    } else {
+      badge.textContent = 'Resto del mundo'; badge.className = 'geo-badge geo-other';
+      ruleEl.textContent = 'Regla: hide';
+      behEl.textContent = 'Sin banner, todo permitido automáticamente';
+    }
+    sel.value = region;
+  }
+
+  function renderBlockedList() {
+    if (blockedItems.length === 0) {
+      blockedListEl.innerHTML = '<div style="color:#888;font-style:italic">Ningún script interceptado.</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < blockedItems.length; i++) {
+      var item = blockedItems[i];
+      var dotCls = item.released ? 'green' : 'red';
+      html += '<div class="blocked-item"><span class="blocked-dot ' + dotCls + '"></span><span class="blocked-src">' + item.src + '</span><span class="blocked-cat ' + (item.released ? 'ok' : 'no') + '">' + (item.released ? 'Liberado' : 'Bloqueado') + '</span></div>';
+    }
+    blockedListEl.innerHTML = html;
+  }
+
+  // Event listeners
+  ['banner:show','preferences:show','consent','consent:existing','consent:reset','scripts:unblocked'].forEach(function(evt) {
+    document.addEventListener('consenthub:' + evt, function(e) { log(evt, e.detail); updateConsentUI(); });
+  });
+  ['gcm:default','gcm:update'].forEach(function(evt) {
+    document.addEventListener('consenthub:' + evt, function(e) { log(evt, e.detail, 'gcm'); updateGCMUI(e.detail); });
+  });
+  document.addEventListener('consenthub:blocker:init', function(e) { log('blocker:init', e.detail, 'blocker'); });
+  document.addEventListener('consenthub:blocker:blocked', function(e) {
+    log('blocker:blocked', e.detail, 'blocker');
+    blockedItems.push({ src: e.detail.src, category: e.detail.category, released: false }); renderBlockedList();
+  });
+  document.addEventListener('consenthub:blocker:released', function(e) {
+    log('blocker:released', e.detail, 'blocker');
+    for (var i = 0; i < blockedItems.length; i++) { if (blockedItems[i].src === e.detail.src) blockedItems[i].released = true; }
+    renderBlockedList();
+  });
+  document.addEventListener('consenthub:geo:detected', function(e) { log('geo:detected', e.detail, 'geo'); updateGeoUI(e.detail.region, e.detail.rule); });
+  document.addEventListener('consenthub:geo:auto', function(e) { log('geo:auto', e.detail, 'geo'); });
+
+  // Monitor dataLayer
+  window.dataLayer = window.dataLayer || [];
+  var origPush = Array.prototype.push;
+  window.dataLayer.push = function() { origPush.apply(this, arguments); dlCount++; document.getElementById('gcm-dl-count').textContent = 'dataLayer: ' + dlCount; };
+
+  // Build config
+  var initConfig = {
+    position: 'bottom',
+    theme: { primary: '#1a1a1a', primaryText: '#ffffff', radius: '12px' },
+    gcm: { enabled: true, mode: 'advanced', urlPassthrough: true, adsDataRedaction: true, waitForUpdate: 500 },
+    blocker: { enabled: true }
+  };
+
+  // Add geo if simulated
+  if (simGeo) {
+    initConfig.geo = {
+      enabled: true,
+      region: simGeo,
+      rules: { eu: 'optin', ccpa: 'optout', other: 'hide' }
+    };
+  }
+
+  ConsentHub.init(initConfig);
+  log('init', { version: ConsentHub.version, geo: simGeo || 'off' });
+  updateConsentUI();
+  if (!simGeo) updateGeoUI('', '');
+
+  // Expose helpers
+  window.simulateInject = function(type) {
+    var urls = { analytics: 'https://static.hotjar.com/c/hotjar-999999.js', marketing: 'https://connect.facebook.net/en_US/fbevents.js' };
+    var s = document.createElement('script'); s.src = urls[type]; document.body.appendChild(s);
+    log('demo:inject', { type: type, src: s.src });
+  };
+
+  window.reloadWithGeo = function(region) {
+    // Clear consent cookie so geo takes effect
+    document.cookie = 'ch_consent=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax';
+    var url = window.location.pathname;
+    if (region) url += '?geo=' + region;
+    window.location.href = url;
+  };
+})();
+</script>
+</body>
+</html>

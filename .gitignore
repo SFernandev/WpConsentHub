@@ -1,0 +1,150 @@
+# =============================================================================
+# ConsentHub - Git Ignore
+# Security & sensitive files for GitHub
+# =============================================================================
+
+# Environment & Configuration
+.env
+.env.local
+.env.*.local
+wp-config.php
+wp-config-sample.php
+settings.local.json
+*.cfg
+*.conf
+*.ini
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.iml
+.netbeans/
+.pylintrc
+.editorconfig.local
+
+# Node & Package managers
+node_modules/
+package-lock.json
+yarn.lock
+.npm
+.eslintcache
+dist/
+build/
+
+# WordPress
+wp-admin/
+wp-content/
+wp-includes/
+wp-*.php
+index.php
+license.txt
+readme.html
+wp-config-sample.php
+wp-mail-smtp/
+.htaccess
+/wordpress/ # Local WordPress installation
+
+# Backups & Archives
+*.zip.bak
+*.tar.gz
+*.tar
+*.rar
+backup/
+backups/
+*.sql
+*.sql.gz
+dump.sql
+
+# Logs & Temporary
+*.log
+logs/
+*.tmp
+tmp/
+temp/
+*.cache
+.cache/
+session/
+sessions/
+
+# Development & Testing
+.test-results/
+coverage/
+.nyc_output/
+test-results.xml
+*.test
+debug.log
+php-errors.log
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+Thumbs.db
+
+# Private/Sensitive
+*.key
+*.pem
+*.crt
+*.pub
+private/
+secrets/
+credentials.json
+config-private.php
+local-config.php
+
+# Build artifacts
+dist/
+build/
+*.min.js.map
+*.min.css.map
+.webpack/
+
+# IDE autocomplete/cache
+.vscode/settings.json
+.vscode/extensions.json
+
+# Temporary test files
+*.test-results
+test-*.html
+/test-output/
+
+# Local development only
+.claude/
+development-notes.md
+local-test-*.php
+
+# =============================================================================
+# SAFE TO COMMIT
+# =============================================================================
+# .gitignore itself - for transparency
+!.gitignore
+
+# Source code (all should be safe)
+!wordpress/consent-hub/**
+!consent-hub.*.js
+!consent-hub.*.css
+!consent-hub-wp.zip
+!demo.html
+
+# Documentation
+!*.md
+!LICENSE
+!README.md
+!CONTRIBUTING.md
+
+# Project files (no secrets)
+!PROJECT_STATE.md

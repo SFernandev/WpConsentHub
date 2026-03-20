@@ -1,0 +1,152 @@
+/* ConsentHub Dashboard */
+
+.consent-hub-dashboard-wrap {
+	max-width: 1200px;
+	margin: 20px auto;
+	background: #fff;
+	padding: 20px;
+	border-radius: 8px;
+}
+
+.consent-hub-dashboard-wrap h1 {
+	margin-bottom: 30px;
+	color: #1a1a1a;
+	font-size: 28px;
+}
+
+.consent-hub-dashboard-wrap h2 {
+	margin-top: 30px;
+	margin-bottom: 15px;
+	color: #333;
+	font-size: 18px;
+	border-bottom: 2px solid #f0f0f0;
+	padding-bottom: 10px;
+}
+
+/* Metrics Grid */
+.ch-grid-2 {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 20px;
+	margin-bottom: 30px;
+}
+
+.ch-metric-card {
+	background: linear-gradient(135deg, #f5f7fa 0%, #f9fafb 100%);
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ch-metric-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ch-metric-label {
+	color: #666;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-bottom: 10px;
+	font-weight: 600;
+}
+
+.ch-metric-value {
+	font-size: 32px;
+	font-weight: bold;
+	line-height: 1;
+	color: #1a1a1a;
+}
+
+/* Chart Container */
+.ch-chart-container {
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	padding: 20px;
+	margin-bottom: 30px;
+	position: relative;
+	height: 300px;
+}
+
+#consentChart {
+	max-height: 300px;
+}
+
+/* Section */
+.ch-section {
+	margin-bottom: 30px;
+}
+
+.ch-section table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+}
+
+.ch-section thead {
+	background: #f9f9f9;
+}
+
+.ch-section th {
+	padding: 12px;
+	text-align: left;
+	font-weight: 600;
+	color: #333;
+	border-bottom: 2px solid #e0e0e0;
+}
+
+.ch-section td {
+	padding: 12px;
+	border-bottom: 1px solid #f0f0f0;
+	color: #666;
+}
+
+.ch-section tbody tr:hover {
+	background: #f9f9f9;
+}
+
+/* Info Box */
+.ch-info {
+	background: #f0f8ff;
+	border-left: 4px solid #0066cc;
+	padding: 15px;
+	border-radius: 4px;
+	margin-top: 20px;
+}
+
+.ch-info p {
+	margin: 8px 0;
+	font-size: 14px;
+	color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.consent-hub-dashboard-wrap {
+		padding: 15px;
+	}
+
+	.ch-grid-2 {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 15px;
+	}
+
+	.consent-hub-dashboard-wrap h1 {
+		font-size: 22px;
+	}
+
+	.ch-metric-value {
+		font-size: 24px;
+	}
+}
+
+@media (max-width: 480px) {
+	.ch-grid-2 {
+		grid-template-columns: 1fr;
+	}
+}
