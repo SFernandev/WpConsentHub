@@ -1,3 +1,4 @@
+# Spanish (Spain) translation for ConsentHub
 # Copyright (C) 2024 ConsentHub
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
@@ -5,10 +6,10 @@ msgstr ""
 "Project-Id-Version: ConsentHub 1.4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-20 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: \n"
+"PO-Revision-Date: 2026-03-20 00:00+0000\n"
+"Last-Translator: ConsentHub <info@consenthub.dev>\n"
+"Language-Team: Spanish (Spain)\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,597 +19,593 @@ msgstr ""
 
 #. Plugin Name of the plugin
 msgid "ConsentHub"
-msgstr ""
+msgstr "ConsentHub"
 
 #. Description of the plugin
 msgid "Motor de consentimiento de cookies con Google Consent Mode v2 y script blocker inteligente. Sin llamadas externas, sin SaaS, 100% self-hosted."
-msgstr ""
+msgstr "Motor de consentimiento de cookies con Google Consent Mode v2 y script blocker inteligente. Sin llamadas externas, sin SaaS, 100% self-hosted."
 
 #: consent-hub.php
 msgid "Analítica"
-msgstr ""
+msgstr "Analítica"
 
 #: consent-hub.php
 msgid "Cookies de medición y estadísticas del sitio."
-msgstr ""
+msgstr "Cookies de medición y estadísticas del sitio."
 
 #: consent-hub.php
 msgid "Marketing"
-msgstr ""
+msgstr "Marketing"
 
 #: consent-hub.php
 msgid "Cookies para campañas publicitarias y remarketing."
-msgstr ""
+msgstr "Cookies para campañas publicitarias y remarketing."
 
 #: consent-hub.php
 msgid "Preferencias"
-msgstr ""
+msgstr "Preferencias"
 
 #: consent-hub.php
 msgid "Cookies que recuerdan ajustes como idioma o región."
-msgstr ""
+msgstr "Cookies que recuerdan ajustes como idioma o región."
 
 #: consent-hub.php
 msgid "Este sitio utiliza cookies"
-msgstr ""
+msgstr "Este sitio utiliza cookies"
 
 #: consent-hub.php
 msgid "Usamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar contenido. Puedes aceptar todas, rechazarlas o configurar tus preferencias."
-msgstr ""
+msgstr "Usamos cookies para mejorar tu experiencia, analizar el tráfico y personalizar contenido. Puedes aceptar todas, rechazarlas o configurar tus preferencias."
 
 #: consent-hub.php
 msgid "Aceptar todas"
-msgstr ""
+msgstr "Aceptar todas"
 
 #: consent-hub.php
 msgid "Rechazar todas"
-msgstr ""
+msgstr "Rechazar todas"
 
 #: consent-hub.php
 msgid "Configurar"
-msgstr ""
+msgstr "Configurar"
 
 #: consent-hub.php
 msgid "Preferencias de cookies"
-msgstr ""
+msgstr "Preferencias de cookies"
 
 #: consent-hub.php
 msgid "Selecciona qué categorías de cookies deseas permitir. Las cookies funcionales son siempre necesarias."
-msgstr ""
+msgstr "Selecciona qué categorías de cookies deseas permitir. Las cookies funcionales son siempre necesarias."
 
 #: consent-hub.php
 msgid "Guardar preferencias"
-msgstr ""
+msgstr "Guardar preferencias"
 
 #: consent-hub.php
 msgid "Cookies"
-msgstr ""
+msgstr "Cookies"
 
 #: includes/class-admin.php
 msgid "Ajustes"
-msgstr ""
+msgstr "Ajustes"
 
 #: includes/class-admin.php
 msgid "Banner"
-msgstr ""
+msgstr "Banner"
 
 #: includes/class-admin.php
 msgid "Posición"
-msgstr ""
+msgstr "Posición"
 
 #: includes/class-admin.php
 msgid "Abajo"
-msgstr ""
+msgstr "Abajo"
 
 #: includes/class-admin.php
 msgid "Arriba"
-msgstr ""
+msgstr "Arriba"
 
 #: includes/class-admin.php
 msgid "Centro (modal)"
-msgstr ""
+msgstr "Centro (modal)"
 
 #: includes/class-admin.php
 msgid "Mostrar automáticamente"
-msgstr ""
+msgstr "Mostrar automáticamente"
 
 #: includes/class-admin.php
 msgid "Si no, deberás llamar a ConsentHub.showBanner() manualmente."
-msgstr ""
+msgstr "Si no, deberás llamar a ConsentHub.showBanner() manualmente."
 
 #: includes/class-admin.php
 msgid "Textos del banner"
-msgstr ""
+msgstr "Textos del banner"
 
 #: includes/class-admin.php
 msgid "Título"
-msgstr ""
+msgstr "Título"
 
 #: includes/class-admin.php
 msgid "Descripción"
-msgstr ""
+msgstr "Descripción"
 
 #: includes/class-admin.php
 msgid "Botón aceptar"
-msgstr ""
+msgstr "Botón aceptar"
 
 #: includes/class-admin.php
 msgid "Botón rechazar"
-msgstr ""
+msgstr "Botón rechazar"
 
 #: includes/class-admin.php
 msgid "Botón configurar"
-msgstr ""
+msgstr "Botón configurar"
 
 #: includes/class-admin.php
 msgid "Botón revisitar"
-msgstr ""
+msgstr "Botón revisitar"
 
 #: includes/class-admin.php
 msgid "Textos de preferencias"
-msgstr ""
+msgstr "Textos de preferencias"
 
 #: includes/class-admin.php
 msgid "Botón guardar"
-msgstr ""
+msgstr "Botón guardar"
 
 #: includes/class-admin.php
 msgid "Categorías"
-msgstr ""
+msgstr "Categorías"
 
 #: includes/class-admin.php
 msgid "Nombre"
-msgstr ""
+msgstr "Nombre"
 
 #: includes/class-admin.php
 msgid "Colores"
-msgstr ""
+msgstr "Colores"
 
 #: includes/class-admin.php
 msgid "Tema visual"
-msgstr ""
+msgstr "Tema visual"
 
 #: includes/class-admin.php
 msgid "Color principal"
-msgstr ""
+msgstr "Color principal"
 
 #: includes/class-admin.php
 msgid "Texto del botón"
-msgstr ""
+msgstr "Texto del botón"
 
 #: includes/class-admin.php
 msgid "Fondo"
-msgstr ""
+msgstr "Fondo"
 
 #: includes/class-admin.php
 msgid "Texto"
-msgstr ""
+msgstr "Texto"
 
 #: includes/class-admin.php
 msgid "Texto secundario"
-msgstr ""
+msgstr "Texto secundario"
 
 #: includes/class-admin.php
 msgid "Bordes"
-msgstr ""
+msgstr "Bordes"
 
 #: includes/class-admin.php
 msgid "Toggle activo"
-msgstr ""
+msgstr "Toggle activo"
 
 #: includes/class-admin.php
 msgid "Toggle inactivo"
-msgstr ""
+msgstr "Toggle inactivo"
 
 #: includes/class-admin.php
 msgid "Forma"
-msgstr ""
+msgstr "Forma"
 
 #: includes/class-admin.php
 msgid "Border radius"
-msgstr ""
+msgstr "Border radius"
 
 #: includes/class-admin.php
 msgid "Google Consent Mode v2"
-msgstr ""
+msgstr "Google Consent Mode v2"
 
 #: includes/class-admin.php
 msgid "Activar GCM v2"
-msgstr ""
+msgstr "Activar GCM v2"
 
 #: includes/class-admin.php
 msgid "Modo"
-msgstr ""
+msgstr "Modo"
 
 #: includes/class-admin.php
 msgid "Advanced (recomendado)"
-msgstr ""
+msgstr "Advanced (recomendado)"
 
 #: includes/class-admin.php
 msgid "Basic"
-msgstr ""
+msgstr "Basic"
 
 #: includes/class-admin.php
 msgid "Advanced envía pings sin cookies para que Google pueda modelar conversiones."
-msgstr ""
+msgstr "Advanced envía pings sin cookies para que Google pueda modelar conversiones."
 
 #: includes/class-admin.php
 msgid "URL passthrough"
-msgstr ""
+msgstr "URL passthrough"
 
 #: includes/class-admin.php
 msgid "Pasa GCLID/DCLID a través de enlaces internos."
-msgstr ""
+msgstr "Pasa GCLID/DCLID a través de enlaces internos."
 
 #: includes/class-admin.php
 msgid "Ads data redaction"
-msgstr ""
+msgstr "Ads data redaction"
 
 #: includes/class-admin.php
 msgid "Wait for update (ms)"
-msgstr ""
+msgstr "Wait for update (ms)"
 
 #: includes/class-admin.php
 msgid "Tiempo que esperan los tags de Google antes de disparar si no hay respuesta."
-msgstr ""
+msgstr "Tiempo que esperan los tags de Google antes de disparar si no hay respuesta."
 
 #: includes/class-admin.php
 msgid "Script blocker inteligente"
-msgstr ""
+msgstr "Script blocker inteligente"
 
 #: includes/class-admin.php
 msgid "Activar blocker"
-msgstr ""
+msgstr "Activar blocker"
 
 #: includes/class-admin.php
 msgid "Intercepta scripts inyectados dinámicamente (Hotjar, Facebook Pixel, etc.)."
-msgstr ""
+msgstr "Intercepta scripts inyectados dinámicamente (Hotjar, Facebook Pixel, etc.)."
 
 #: includes/class-admin.php
 msgid "Activar logging"
-msgstr ""
+msgstr "Activar logging"
 
 #: includes/class-admin.php
 msgid "Guarda un registro local de cada consentimiento (aceptado, rechazado, parcial)."
-msgstr ""
+msgstr "Guarda un registro local de cada consentimiento (aceptado, rechazado, parcial)."
 
 #: includes/class-admin.php
 msgid "Retención (días)"
-msgstr ""
+msgstr "Retención (días)"
 
 #: includes/class-admin.php
 msgid "Los registros más antiguos se eliminan automáticamente. Mínimo 7, máximo 365."
-msgstr ""
+msgstr "Los registros más antiguos se eliminan automáticamente. Mínimo 7, máximo 365."
 
 #: includes/class-admin.php
 msgid "Geolocalización"
-msgstr ""
+msgstr "Geolocalización"
 
 #: includes/class-admin.php
 msgid "Activar geo-detección"
-msgstr ""
+msgstr "Activar geo-detección"
 
 #: includes/class-admin.php
 msgid "Detecta la región del visitante y adapta el comportamiento del banner."
-msgstr ""
+msgstr "Detecta la región del visitante y adapta el comportamiento del banner."
 
 #: includes/class-admin.php
 msgid "Detección"
-msgstr ""
+msgstr "Detección"
 
 #: includes/class-admin.php
 msgid "Automática (cabeceras CDN)"
-msgstr ""
+msgstr "Automática (cabeceras CDN)"
 
 #: includes/class-admin.php
 msgid "Forzar: UE/EEA"
-msgstr ""
+msgstr "Forzar: UE/EEA"
 
 #: includes/class-admin.php
 msgid "Forzar: CCPA (EE.UU.)"
-msgstr ""
+msgstr "Forzar: CCPA (EE.UU.)"
 
 #: includes/class-admin.php
 msgid "Forzar: Resto del mundo"
-msgstr ""
+msgstr "Forzar: Resto del mundo"
 
 #: includes/class-admin.php
 msgid "Auto usa Cloudflare, Vercel, CloudFront u otras cabeceras."
-msgstr ""
+msgstr "Auto usa Cloudflare, Vercel, CloudFront u otras cabeceras."
 
 #: includes/class-admin.php
 msgid "Regla UE/EEA"
-msgstr ""
+msgstr "Regla UE/EEA"
 
 #: includes/class-admin.php
 msgid "Opt-in (GDPR: requiere consentimiento)"
-msgstr ""
+msgstr "Opt-in (GDPR: requiere consentimiento)"
 
 #: includes/class-admin.php
 msgid "Opt-out"
-msgstr ""
+msgstr "Opt-out"
 
 #: includes/class-admin.php
 msgid "Regla CCPA (EE.UU.)"
-msgstr ""
+msgstr "Regla CCPA (EE.UU.)"
 
 #: includes/class-admin.php
 msgid "Opt-out (permite por defecto, opción de rechazar)"
-msgstr ""
+msgstr "Opt-out (permite por defecto, opción de rechazar)"
 
 #: includes/class-admin.php
 msgid "Opt-in"
-msgstr ""
+msgstr "Opt-in"
 
 #: includes/class-admin.php
 msgid "Regla resto del mundo"
-msgstr ""
+msgstr "Regla resto del mundo"
 
 #: includes/class-admin.php
 msgid "Ocultar banner (permitir todo)"
-msgstr ""
+msgstr "Ocultar banner (permitir todo)"
 
 #: includes/class-admin.php
 msgid "Fallback por defecto"
-msgstr ""
+msgstr "Fallback por defecto"
 
 #: includes/class-admin.php
 msgid "Resto del mundo"
-msgstr ""
+msgstr "Resto del mundo"
 
 #: includes/class-admin.php
 msgid "UE (conservador)"
-msgstr ""
+msgstr "UE (conservador)"
 
 #: includes/class-admin.php
 msgid "CCPA"
-msgstr ""
+msgstr "CCPA"
 
 #: includes/class-admin.php
 msgid "Si no se detecta la región, ¿qué regla aplicar?"
-msgstr ""
+msgstr "Si no se detecta la región, ¿qué regla aplicar?"
 
 #: includes/class-admin.php
 #: includes/class-dashboard.php
 msgid "Guardar cambios"
-msgstr ""
+msgstr "Guardar cambios"
 
 #: includes/class-dashboard.php
 msgid "ConsentHub Dashboard"
-msgstr ""
+msgstr "ConsentHub Dashboard"
 
 #: includes/class-dashboard.php
 msgid "General"
-msgstr ""
+msgstr "General"
 
 #: includes/class-dashboard.php
 msgid "Banner y Textos"
-msgstr ""
+msgstr "Banner y Textos"
 
 #: includes/class-dashboard.php
 msgid "Apariencia"
-msgstr ""
+msgstr "Apariencia"
 
 #: includes/class-dashboard.php
 msgid "Compliance"
-msgstr ""
+msgstr "Compliance"
 
 #: includes/class-dashboard.php
 msgid "Google Consent Mode"
-msgstr ""
+msgstr "Google Consent Mode"
 
 #: includes/class-dashboard.php
 msgid "Script Blocker"
-msgstr ""
+msgstr "Script Blocker"
 
 #: includes/class-dashboard.php
 msgid "Datos"
-msgstr ""
+msgstr "Datos"
 
 #: includes/class-dashboard.php
 msgid "Registro"
-msgstr ""
+msgstr "Registro"
 
 #: includes/class-dashboard.php
 msgid "Error: no se pudo crear la tabla de registros. Desactiva y reactiva el plugin."
-msgstr ""
+msgstr "Error: no se pudo crear la tabla de registros. Desactiva y reactiva el plugin."
 
 #: includes/class-dashboard.php
 msgid "El registro de consentimientos está desactivado. Actívalo en la sección Registro para empezar a recopilar datos."
-msgstr ""
+msgstr "El registro de consentimientos está desactivado. Actívalo en la sección Registro para empezar a recopilar datos."
 
 #: includes/class-dashboard.php
 msgid "Vista general de ConsentHub"
-msgstr ""
+msgstr "Vista general de ConsentHub"
 
 #: includes/class-dashboard.php
 msgid "Estado del sitio"
-msgstr ""
+msgstr "Estado del sitio"
 
 #: includes/class-dashboard.php
 msgid "Cookie banner"
-msgstr ""
+msgstr "Cookie banner"
 
 #: includes/class-dashboard.php
 msgid "Activo"
-msgstr ""
+msgstr "Activo"
 
 #: includes/class-dashboard.php
 msgid "Inactivo"
-msgstr ""
+msgstr "Inactivo"
 
 #: includes/class-dashboard.php
 msgid "Geo-targeting"
-msgstr ""
+msgstr "Geo-targeting"
 
 #: includes/class-dashboard.php
 msgid "Versión"
-msgstr ""
+msgstr "Versión"
 
 #: includes/class-dashboard.php
 msgid "Registro y categorías"
-msgstr ""
+msgstr "Registro y categorías"
 
 #: includes/class-dashboard.php
 msgid "Total registros"
-msgstr ""
+msgstr "Total registros"
 
 #: includes/class-dashboard.php
 msgid "Retención"
-msgstr ""
+msgstr "Retención"
 
 #: includes/class-dashboard.php
 msgid "días"
-msgstr ""
+msgstr "días"
 
 #: includes/class-dashboard.php
 msgid "Último registro"
-msgstr ""
+msgstr "Último registro"
 
 #: includes/class-dashboard.php
 msgid "Ninguno"
-msgstr ""
+msgstr "Ninguno"
 
 #: includes/class-dashboard.php
 msgid "Tendencias de consentimiento"
-msgstr ""
+msgstr "Tendencias de consentimiento"
 
 #: includes/class-dashboard.php
 msgid "Aceptados"
-msgstr ""
+msgstr "Aceptados"
 
 #: includes/class-dashboard.php
 msgid "Rechazados"
-msgstr ""
+msgstr "Rechazados"
 
 #: includes/class-dashboard.php
 msgid "Parciales"
-msgstr ""
+msgstr "Parciales"
 
 #: includes/class-dashboard.php
 msgid "Tendencia por periodo"
-msgstr ""
+msgstr "Tendencia por periodo"
 
 #: includes/class-dashboard.php
 msgid "Registros recientes"
-msgstr ""
+msgstr "Registros recientes"
 
 #: includes/class-dashboard.php
 msgid "Mostrar"
-msgstr ""
+msgstr "Mostrar"
 
 #: includes/class-dashboard.php
 msgid "Consent ID"
-msgstr ""
+msgstr "Consent ID"
 
 #: includes/class-dashboard.php
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: includes/class-dashboard.php
 msgid "Estado"
-msgstr ""
+msgstr "Estado"
 
 #: includes/class-dashboard.php
 msgid "Región"
-msgstr ""
+msgstr "Región"
 
 #: includes/class-dashboard.php
 msgid "Fecha/Hora"
-msgstr ""
+msgstr "Fecha/Hora"
 
 #: includes/class-dashboard.php
 msgid "Aceptado"
-msgstr ""
+msgstr "Aceptado"
 
 #: includes/class-dashboard.php
 msgid "Rechazado"
-msgstr ""
+msgstr "Rechazado"
 
 #: includes/class-dashboard.php
 msgid "Parcial"
-msgstr ""
+msgstr "Parcial"
 
 #: includes/class-dashboard.php
 msgid "Sin datos"
-msgstr ""
+msgstr "Sin datos"
 
 #: includes/class-dashboard.php
 msgid "Configura el banner de cookies y sus textos"
-msgstr ""
+msgstr "Configura el banner de cookies y sus textos"
 
 #: includes/class-dashboard.php
 msgid "Configura las categorías de cookies"
-msgstr ""
+msgstr "Configura las categorías de cookies"
 
 #: includes/class-dashboard.php
 msgid "Personaliza colores y estilo visual del banner"
-msgstr ""
+msgstr "Personaliza colores y estilo visual del banner"
 
 #: includes/class-dashboard.php
 msgid "Integración con Google Consent Mode"
-msgstr ""
-
-#: includes/class-dashboard.php
-msgid "Script Blocker"
-msgstr ""
+msgstr "Integración con Google Consent Mode"
 
 #: includes/class-dashboard.php
 msgid "Intercepta scripts hasta que el usuario dé consentimiento"
-msgstr ""
+msgstr "Intercepta scripts hasta que el usuario dé consentimiento"
 
 #: includes/class-dashboard.php
 msgid "Adapta el banner según la región del visitante"
-msgstr ""
+msgstr "Adapta el banner según la región del visitante"
 
 #: includes/class-dashboard.php
 msgid "Configuración del registro de consentimientos"
-msgstr ""
+msgstr "Configuración del registro de consentimientos"
 
 #: includes/class-dashboard.php
 msgid "Últimos 7 días"
-msgstr ""
+msgstr "Últimos 7 días"
 
 #: includes/class-dashboard.php
 msgid "Resumen"
-msgstr ""
+msgstr "Resumen"
 
 #: includes/class-dashboard.php
 msgid "Tipo"
-msgstr ""
+msgstr "Tipo"
 
 #: includes/class-dashboard.php
 msgid "Cantidad"
-msgstr ""
+msgstr "Cantidad"
 
 #: includes/class-dashboard.php
 msgid "Porcentaje"
-msgstr ""
+msgstr "Porcentaje"
 
 #: includes/class-dashboard.php
 msgid "Último registro:"
-msgstr ""
+msgstr "Último registro:"
 
 #: includes/class-dashboard.php
 msgid "Ninguno aún"
-msgstr ""
+msgstr "Ninguno aún"
 
 #: includes/class-dashboard.php
 msgid "Plugin:"
-msgstr ""
+msgstr "Plugin:"
 
 #: includes/class-dashboard.php
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: includes/class-ajax.php
 msgid "Invalid nonce"
-msgstr ""
+msgstr "Nonce inválido"
 
 #: includes/class-ajax.php
 msgid "Invalid consent type"
-msgstr ""
+msgstr "Tipo de consentimiento inválido"
 
 #: includes/class-ajax.php
 msgid "Logged"
-msgstr ""
+msgstr "Registrado"

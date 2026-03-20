@@ -676,6 +676,36 @@
 }
 
 /* ══════════════════════════════════════════════════════════
+   LOGS HEADER ACTIONS (export button + per-page selector)
+   ══════════════════════════════════════════════════════════ */
+
+.ch-logs-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ch-btn-export {
+  padding: 5px 12px;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.ch-btn-export:hover {
+  background: #f9fafb;
+  border-color: #2271b1;
+  color: #2271b1;
+}
+
+/* ══════════════════════════════════════════════════════════
    PER-PAGE SELECTOR
    ══════════════════════════════════════════════════════════ */
 
@@ -737,6 +767,65 @@
   background: #2271b1;
   border-color: #2271b1;
   color: #fff;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FILTERS BAR
+   ══════════════════════════════════════════════════════════ */
+
+.ch-filters {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ch-filter-select,
+.ch-filter-input {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fff;
+  color: #374151;
+}
+
+.ch-filter-select:focus,
+.ch-filter-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.ch-btn-filter {
+  background: #2271b1;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ch-btn-filter:hover {
+  background: #135e96;
+}
+
+.ch-btn-filter-clear {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+
+.ch-btn-filter-clear:hover {
+  color: #111827;
 }
 
 /* ══════════════════════════════════════════════════════════

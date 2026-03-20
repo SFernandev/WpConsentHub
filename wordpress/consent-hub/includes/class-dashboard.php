@@ -8,6 +8,7 @@ class CH_Dashboard {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 		add_action( 'wp_ajax_ch_chart_data', array( __CLASS__, 'ajax_chart_data' ) );
 		add_action( 'wp_ajax_ch_logs_page', array( __CLASS__, 'ajax_logs_page' ) );
+		add_action( 'wp_ajax_ch_export_csv', array( __CLASS__, 'ajax_export_csv' ) );
 	}
 
 	public static function add_menu() {
@@ -115,7 +116,7 @@ class CH_Dashboard {
 	}
 
 	/**
-	 * AJAX: return paginated logs.
+	 * AJAX: return paginated logs (with optional filters).
 	 */
 	public static function ajax_logs_page() {
 		check_ajax_referer( 'ch_dashboard', 'nonce' );
@@ -126,8 +127,38 @@ class CH_Dashboard {
 
 		$page   = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
 		$offset = ( $page - 1 ) * $per_page;
-		$total  = CH_Database::get_total_logs();
-		$logs   = CH_Database::get_recent_logs( $per_page, $offset );
+
+		// Read and sanitize filter params
+		$consent_type = isset( $_GET['consent_type'] ) ? sanitize_text_field( wp_unslash( $_GET['consent_type'] ) ) : '';
+		$geo_region   = isset( $_GET['geo_region'] )   ? sanitize_text_field( wp_unslash( $_GET['geo_region'] ) )   : '';
+		$date_from    = isset( $_GET['date_from'] )    ? sanitize_text_field( wp_unslash( $_GET['date_from'] ) )    : '';
+		$date_to      = isset( $_GET['date_to'] )      ? sanitize_text_field( wp_unslash( $_GET['date_to'] ) )      : '';
+
+		// Validate against whitelists
+		if ( ! in_array( $consent_type, array( 'accepted', 'rejected', 'partial', '' ), true ) ) $consent_type = '';
+		if ( ! in_array( $geo_region,   array( 'eu', 'ccpa', 'other', '' ), true ) )              $geo_region   = '';
+
+		// Validate date format (YYYY-MM-DD)
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) $date_from = '';
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) )   $date_to   = '';
+
+		$has_filters = $consent_type || $geo_region || $date_from || $date_to;
+
+		if ( $has_filters ) {
+			$result = CH_Database::get_filtered_logs( array(
+				'per_page'     => $per_page,
+				'offset'       => $offset,
+				'consent_type' => $consent_type,
+				'geo_region'   => $geo_region,
+				'date_from'    => $date_from,
+				'date_to'      => $date_to,
+			) );
+			$logs  = $result['rows'];
+			$total = $result['total'];
+		} else {
+			$total = CH_Database::get_total_logs();
+			$logs  = CH_Database::get_recent_logs( $per_page, $offset );
+		}
 
 		$type_labels = array(
 			'accepted' => __( 'Aceptado', 'consent-hub' ),
@@ -156,6 +187,53 @@ class CH_Dashboard {
 			'page'       => $page,
 			'per_page'   => $per_page,
 		) );
+	}
+
+	/**
+	 * AJAX: export all logs as a CSV file download.
+	 */
+	public static function ajax_export_csv() {
+		check_ajax_referer( 'ch_dashboard', 'nonce' );
+		if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Forbidden', 403 );
+
+		$logs = CH_Database::get_all_logs();
+
+		$filename = 'consent-hub-logs-' . date( 'Y-m-d' ) . '.csv';
+
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		$type_labels = array(
+			'accepted' => 'Aceptado',
+			'rejected' => 'Rechazado',
+			'partial'  => 'Parcial',
+		);
+
+		$output = fopen( 'php://output', 'w' );
+
+		// BOM for Excel UTF-8 compatibility
+		fputs( $output, "\xEF\xBB\xBF" );
+
+		fputcsv( $output, array( 'Consent ID', 'IP', 'Estado', 'Categorías', 'Región', 'Fecha' ) );
+
+		foreach ( $logs as $log ) {
+			$cats     = json_decode( $log->categories, true );
+			$cats_str = is_array( $cats ) && ! empty( $cats ) ? implode( ', ', $cats ) : '';
+
+			fputcsv( $output, array(
+				sprintf( 'CH-%08X', $log->id ),
+				! empty( $log->ip_partial ) ? $log->ip_partial : '',
+				isset( $type_labels[ $log->consent_type ] ) ? $type_labels[ $log->consent_type ] : $log->consent_type,
+				$cats_str,
+				strtoupper( $log->geo_region ?: 'OTHER' ),
+				self::to_madrid( $log->created_at ),
+			) );
+		}
+
+		fclose( $output );
+		wp_die();
 	}
 
 	/**
@@ -362,15 +440,36 @@ class CH_Dashboard {
 						<div class="ch-card" id="ch-logs-card">
 							<div class="ch-card-header ch-card-header-flex">
 								<h2><?php esc_html_e( 'Registros recientes', 'consent-hub' ); ?></h2>
-								<div class="ch-per-page-selector">
-									<label><?php esc_html_e( 'Mostrar', 'consent-hub' ); ?>
-										<select id="ch-logs-per-page">
-											<option value="10" selected>10</option>
-											<option value="25">25</option>
-											<option value="50">50</option>
-										</select>
-									</label>
+								<div class="ch-logs-header-actions">
+									<button type="button" class="ch-btn-export" id="ch-export-csv"><?php esc_html_e( 'Exportar CSV', 'consent-hub' ); ?></button>
+									<div class="ch-per-page-selector">
+										<label><?php esc_html_e( 'Mostrar', 'consent-hub' ); ?>
+											<select id="ch-logs-per-page">
+												<option value="10" selected>10</option>
+												<option value="25">25</option>
+												<option value="50">50</option>
+											</select>
+										</label>
+									</div>
 								</div>
+							</div>
+							<div class="ch-filters" id="ch-log-filters">
+								<select id="ch-filter-type" class="ch-filter-select">
+									<option value=""><?php esc_html_e( 'Todos los estados', 'consent-hub' ); ?></option>
+									<option value="accepted"><?php esc_html_e( 'Aceptado', 'consent-hub' ); ?></option>
+									<option value="rejected"><?php esc_html_e( 'Rechazado', 'consent-hub' ); ?></option>
+									<option value="partial"><?php esc_html_e( 'Parcial', 'consent-hub' ); ?></option>
+								</select>
+								<select id="ch-filter-region" class="ch-filter-select">
+									<option value=""><?php esc_html_e( 'Todas las regiones', 'consent-hub' ); ?></option>
+									<option value="eu">EU</option>
+									<option value="ccpa">CCPA</option>
+									<option value="other">OTHER</option>
+								</select>
+								<input type="date" id="ch-filter-from" class="ch-filter-input" placeholder="<?php esc_attr_e( 'Desde', 'consent-hub' ); ?>">
+								<input type="date" id="ch-filter-to" class="ch-filter-input" placeholder="<?php esc_attr_e( 'Hasta', 'consent-hub' ); ?>">
+								<button type="button" class="ch-btn-filter" id="ch-filter-apply"><?php esc_html_e( 'Filtrar', 'consent-hub' ); ?></button>
+								<button type="button" class="ch-btn-filter-clear" id="ch-filter-clear"><?php esc_html_e( 'Limpiar', 'consent-hub' ); ?></button>
 							</div>
 							<div class="ch-card-body ch-card-body-table">
 								<table class="widefat ch-logs-table">

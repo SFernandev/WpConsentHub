@@ -14,6 +14,7 @@
 		initLineChart( chDashboard.chart );
 		initPeriodSelector();
 		initLogsPagination();
+		initExportCsv();
 	});
 
 	/* ═══ DONUT CHART ═══ */
@@ -185,10 +186,26 @@
 			});
 	}
 
+	/* ═══ CSV EXPORT ═══ */
+
+	function initExportCsv() {
+		var btn = document.getElementById( 'ch-export-csv' );
+		if ( ! btn ) return;
+
+		btn.addEventListener( 'click', function() {
+			window.location.href = chDashboard.ajax_url
+				+ '?action=ch_export_csv&nonce=' + chDashboard.nonce;
+		});
+	}
+
 	/* ═══ LOGS PAGINATION ═══ */
 
-	var currentPage    = 1;
-	var currentPerPage = 10;
+	var currentPage      = 1;
+	var currentPerPage   = 10;
+	var currentType      = '';
+	var currentRegion    = '';
+	var currentDateFrom  = '';
+	var currentDateTo    = '';
 
 	function initLogsPagination() {
 		var select = document.getElementById( 'ch-logs-per-page' );
@@ -214,6 +231,36 @@
 			});
 		}
 
+		// Filter: apply button
+		var btnApply = document.getElementById( 'ch-filter-apply' );
+		if ( btnApply ) {
+			btnApply.addEventListener( 'click', function() {
+				currentType     = document.getElementById( 'ch-filter-type' ).value;
+				currentRegion   = document.getElementById( 'ch-filter-region' ).value;
+				currentDateFrom = document.getElementById( 'ch-filter-from' ).value;
+				currentDateTo   = document.getElementById( 'ch-filter-to' ).value;
+				currentPage = 1;
+				fetchLogs();
+			});
+		}
+
+		// Filter: clear button
+		var btnClear = document.getElementById( 'ch-filter-clear' );
+		if ( btnClear ) {
+			btnClear.addEventListener( 'click', function() {
+				currentType     = '';
+				currentRegion   = '';
+				currentDateFrom = '';
+				currentDateTo   = '';
+				document.getElementById( 'ch-filter-type' ).value   = '';
+				document.getElementById( 'ch-filter-region' ).value = '';
+				document.getElementById( 'ch-filter-from' ).value   = '';
+				document.getElementById( 'ch-filter-to' ).value     = '';
+				currentPage = 1;
+				fetchLogs();
+			});
+		}
+
 		// Render initial pagination from data PHP already passed via wp_localize_script
 		var totalLogs = parseInt( chDashboard.total_logs, 10 ) || 0;
 		if ( totalLogs > 0 ) {
@@ -231,6 +278,11 @@
 			+ '?action=ch_logs_page&nonce=' + chDashboard.nonce
 			+ '&per_page=' + currentPerPage
 			+ '&paged=' + currentPage;
+
+		if ( currentType )     url += '&consent_type=' + encodeURIComponent( currentType );
+		if ( currentRegion )   url += '&geo_region='   + encodeURIComponent( currentRegion );
+		if ( currentDateFrom ) url += '&date_from='    + encodeURIComponent( currentDateFrom );
+		if ( currentDateTo )   url += '&date_to='      + encodeURIComponent( currentDateTo );
 
 		fetch( url, { credentials: 'same-origin' } )
 			.then( function( r ) { return r.json(); } )

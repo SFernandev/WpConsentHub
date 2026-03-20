@@ -215,6 +215,92 @@ class CH_Database {
 	}
 
 	/**
+	 * Get filtered and paginated consent logs.
+	 *
+	 * @param array $args {
+	 *     @type int    $per_page     Number of rows per page. Default 10.
+	 *     @type int    $offset       Row offset. Default 0.
+	 *     @type string $consent_type Filter by type: 'accepted', 'rejected', 'partial'.
+	 *     @type string $geo_region   Filter by region: 'eu', 'ccpa', 'other'.
+	 *     @type string $date_from    Filter from date (YYYY-MM-DD).
+	 *     @type string $date_to      Filter to date (YYYY-MM-DD).
+	 * }
+	 * @return array { rows: array, total: int }
+	 */
+	public static function get_filtered_logs( $args = array() ) {
+		global $wpdb;
+		$table = self::table_name();
+
+		$defaults = array(
+			'per_page'     => 10,
+			'offset'       => 0,
+			'consent_type' => '',
+			'geo_region'   => '',
+			'date_from'    => '',
+			'date_to'      => '',
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		$where        = array();
+		$where_values = array();
+
+		if ( ! empty( $args['consent_type'] ) ) {
+			$where[]        = 'consent_type = %s';
+			$where_values[] = $args['consent_type'];
+		}
+
+		if ( ! empty( $args['geo_region'] ) ) {
+			$where[]        = 'geo_region = %s';
+			$where_values[] = $args['geo_region'];
+		}
+
+		if ( ! empty( $args['date_from'] ) ) {
+			$where[]        = 'DATE(created_at) >= %s';
+			$where_values[] = $args['date_from'];
+		}
+
+		if ( ! empty( $args['date_to'] ) ) {
+			$where[]        = 'DATE(created_at) <= %s';
+			$where_values[] = $args['date_to'];
+		}
+
+		$where_clause = ! empty( $where ) ? 'WHERE ' . implode( ' AND ', $where ) : '';
+
+		// Count total matching rows
+		$count_sql = "SELECT COUNT(*) FROM {$table} {$where_clause}";
+		if ( ! empty( $where_values ) ) {
+			$total = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $where_values ) );
+		} else {
+			$total = (int) $wpdb->get_var( $count_sql );
+		}
+
+		// Fetch paginated rows
+		$rows_values   = array_merge( $where_values, array( (int) $args['per_page'], (int) $args['offset'] ) );
+		$rows_sql      = "SELECT id, consent_type, categories, geo_region, ip_partial, created_at
+		                  FROM {$table} {$where_clause} ORDER BY created_at DESC LIMIT %d OFFSET %d";
+		$rows          = $wpdb->get_results( $wpdb->prepare( $rows_sql, $rows_values ) );
+
+		return array(
+			'rows'  => $rows,
+			'total' => $total,
+		);
+	}
+
+	/**
+	 * Get all consent logs without pagination (for CSV export).
+	 *
+	 * @return array
+	 */
+	public static function get_all_logs() {
+		global $wpdb;
+		$table = self::table_name();
+		return $wpdb->get_results(
+			"SELECT id, consent_type, categories, geo_region, ip_partial, created_at
+			 FROM {$table} ORDER BY created_at DESC"
+		);
+	}
+
+	/**
 	 * Clean up old logs (older than N days).
 	 *
 	 * @param int $days Default 90
