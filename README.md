@@ -6,6 +6,8 @@
 ![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple)
 
+![ConsentHub Dashboard](docs/screenshots/dashboard.png)
+
 ---
 
 ## Features
@@ -131,7 +133,7 @@ ConsentHub.on('consent', function(data) {
 ConsentHub.off('consent', handler);  // Remove listener
 
 // Version
-ConsentHub.version;                  // '1.3.0'
+ConsentHub.version;                  // '1.4.0'
 ```
 
 ---
@@ -319,7 +321,6 @@ Free for commercial use, but you must:
 
 - 📖 [Documentation](https://github.com/SFernandev/WpConsentHub/wiki)
 - 🐛 [Issues](https://github.com/SFernandev/WpConsentHub/issues)
-- 💬 [Discussions](https://github.com/SFernandev/WpConsentHub/discussions)
 
 ---
 
