@@ -25,7 +25,7 @@ class CH_Frontend {
 			CH_URL . 'assets/consent-hub.min.js',
 			array(),
 			CH_VERSION,
-			false
+			true
 		);
 
 		// Attach init call right after the engine script

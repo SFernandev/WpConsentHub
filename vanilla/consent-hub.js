@@ -19,7 +19,7 @@
 ;(function (root) {
   'use strict';
 
-  var VERSION = '1.3.0';
+  var VERSION = '1.4.0';
 
   var defaults = {
     categories: {
@@ -167,7 +167,12 @@
     if (children) {
       if (typeof children === 'string') node.textContent = children;
       else if (Array.isArray(children)) {
-        for (var i = 0; i < children.length; i++) { if (children[i]) node.appendChild(children[i]); }
+        for (var i = 0; i < children.length; i++) {
+          if (children[i]) {
+            if (typeof children[i] === 'string') node.appendChild(document.createTextNode(children[i]));
+            else node.appendChild(children[i]);
+          }
+        }
       }
     }
     return node;
@@ -253,7 +258,7 @@
     var txt = config.texts.banner;
     els.banner = h('div', { id: 'ch-banner', class: 'ch-' + config.position }, [
       h('div', { class: 'ch-box', role: 'dialog', 'aria-label': txt.title }, [
-        h('h3', { class: 'ch-t' }, txt.title),
+        h('h3', { class: 'ch-t' }, '🍪 ' + txt.title),
         h('p', { class: 'ch-d' }, txt.description),
         h('div', { class: 'ch-btns' }, [
           h('button', { class: 'ch-btn ch-bp', events: { click: acceptAll } }, txt.acceptAll),
@@ -302,7 +307,7 @@
       }
     }
     var inner = h('div', { class: 'ch-pbox', role: 'dialog', 'aria-label': txt.title, 'aria-modal': 'true' },
-      [h('h3', { class: 'ch-t' }, txt.title), h('p', { class: 'ch-d' }, txt.description)]
+      [h('h3', { class: 'ch-t' }, '🍪 ' + txt.title), h('p', { class: 'ch-d' }, txt.description)]
         .concat(items)
         .concat([h('div', { class: 'ch-pbtns' }, [
           h('button', { class: 'ch-btn ch-bp', events: { click: savePrefs } }, txt.save),
@@ -344,7 +349,7 @@
   function renderRevisit() {
     if (els.revisit) return;
     els.revisit = h('button', { id: 'ch-revisit', 'aria-label': config.texts.revisit,
-      events: { click: openPrefs } }, config.texts.revisit);
+      events: { click: openPrefs } }, ['\uD83C\uDF6A ', h('span', { class: 'ch-revisit-text' }, config.texts.revisit)]);
     document.body.appendChild(els.revisit);
   }
 
@@ -620,34 +625,33 @@
       gcmInit();
       blockerInit();
 
-      if (consent && consent.version === VERSION) {
-        // Existing consent — apply and show revisit
-        applyConsent(); gcmUpdate(); showRevisit();
-        emit('consent:existing', consent);
-      } else {
-        // No consent yet — check geo rules
-        var rule = getGeoRule();
-        emit('geo:detected', { region: geoRegion, rule: rule });
-
-        if (rule === 'hide') {
-          // No banner, grant all silently
-          geoAutoConsent(rule);
-        } else if (rule === 'optout') {
-          // Grant all by default, but show banner with opt-out option
-          geoAutoConsent(rule);
-          if (config.autoShow) {
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderBanner);
-            else renderBanner();
-          }
-          showRevisit();
+      function run() {
+        if (consent && consent.version === VERSION) {
+          // Existing consent — apply and show revisit
+          applyConsent(); gcmUpdate(); showRevisit();
+          emit('consent:existing', consent);
         } else {
-          // opt-in (default): show banner, deny until explicit consent
-          if (config.autoShow) {
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderBanner);
-            else renderBanner();
+          // No consent yet — check geo rules
+          var rule = getGeoRule();
+          emit('geo:detected', { region: geoRegion, rule: rule });
+
+          if (rule === 'hide') {
+            // No banner, grant all silently
+            geoAutoConsent(rule);
+          } else if (rule === 'optout') {
+            // Grant all by default, but show banner with opt-out option
+            geoAutoConsent(rule);
+            if (config.autoShow) renderBanner();
+            showRevisit();
+          } else {
+            // opt-in (default): show banner, deny until explicit consent
+            if (config.autoShow) renderBanner();
           }
         }
       }
+
+      if (document.body) run();
+      else document.addEventListener('DOMContentLoaded', run);
     },
     hasConsent: function (cat) {
       if (!consent) return false;

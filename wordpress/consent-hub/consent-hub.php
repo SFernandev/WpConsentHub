@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:  ConsentHub
- * Plugin URI:   https://github.com/sfernandev/consent-hub
+ * Plugin URI:   https://github.com/SFernandev/WpConsentHub
  * Description:  Motor de consentimiento de cookies con Google Consent Mode v2 y script blocker inteligente. Sin llamadas externas, sin SaaS, 100% self-hosted.
  * Version:      1.4.0
  * Author:       ConsentHub
@@ -91,6 +91,41 @@ function ch_cron_cleanup() {
 	}
 }
 add_action( 'ch_daily_cleanup', 'ch_cron_cleanup' );
+
+/**
+ * WP Rocket / cache plugins compatibility.
+ * Exclude consent-hub from all JS optimization and safelist dynamic CSS selectors.
+ */
+add_filter( 'rocket_delay_js_exclusions', function ( $excluded ) {
+	$excluded[] = 'consent-hub';
+	$excluded[] = 'ConsentHub';
+	return $excluded;
+} );
+add_filter( 'rocket_exclude_defer_js', function ( $excluded ) {
+	$excluded[] = '/consent-hub(.min)?\.js/';
+	return $excluded;
+} );
+add_filter( 'rocket_exclude_js', function ( $excluded ) {
+	$excluded[] = '/consent-hub(.min)?\.js/';
+	return $excluded;
+} );
+add_filter( 'rocket_rucss_safelist', function ( $safelist ) {
+	$safelist[] = '#ch-banner';
+	$safelist[] = '#ch-revisit';
+	$safelist[] = '#ch-prefs';
+	$safelist[] = '#ch-overlay';
+	$safelist[] = '.ch-v';
+	$safelist[] = '.ch-revisit-text';
+	return $safelist;
+} );
+
+// Force remove defer/async from consent-hub script tag
+add_filter( 'script_loader_tag', function ( $tag, $handle ) {
+	if ( 'consent-hub' === $handle ) {
+		$tag = str_replace( array( ' defer', ' async', " type='text/javascript'" ), '', $tag );
+	}
+	return $tag;
+}, 99, 2 );
 
 /**
  * Default settings.

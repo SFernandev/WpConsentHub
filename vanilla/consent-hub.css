@@ -324,7 +324,7 @@
   border: none;
   border-radius: 20px;
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   font-family: var(--ch-font);
@@ -364,5 +364,15 @@
 
   .ch-pbox {
     padding: 20px;
+  }
+
+  #ch-revisit .ch-revisit-text {
+    display: none;
+  }
+
+  #ch-revisit {
+    padding: 8px 10px;
+    font-size: 18px;
+    line-height: 1;
   }
 }

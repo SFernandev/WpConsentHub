@@ -2,7 +2,7 @@
 
 **Open-source, self-hosted cookie consent manager** for WordPress and static websites. Zero external dependencies, no SaaS, full GDPR compliance.
 
-![Version](https://img.shields.io/badge/version-1.4.0--beta-blue)
+![Version](https://img.shields.io/badge/version-1.4.0-blue)
 ![License](https://img.shields.io/badge/license-GPL--2.0--or--later-green)
 ![PHP](https://img.shields.io/badge/php-7.4%2B-purple)
 
@@ -33,9 +33,11 @@
 - Regional rules: EU (opt-in), CCPA (opt-out), Other (hide/show)
 - Manual override option
 
-✅ **Dashboard & Analytics** *(v1.4.0-beta)*
+✅ **Dashboard & Analytics** *(v1.4.0)*
 - Consent metrics: accepted, rejected, partial
 - 7-day trend chart (Chart.js)
+- CSV export with date/type/region filters
+- Duplicate consent prevention (frontend + backend)
 - Local database logging (no SaaS)
 - IP & User-Agent hashing (non-reversible)
 
@@ -45,7 +47,7 @@
 
 ### WordPress Plugin
 
-1. Download `plugin-consent-hub.zip` from [Releases](https://github.com/sfernandev/consent-hub/releases)
+1. Download `plugin-consent-hub.zip` from [Releases](https://github.com/SFernandev/WpConsentHub/releases)
 2. Go to **Plugins → Add New → Upload Plugin**
 3. Select `plugin-consent-hub.zip` and activate
 4. Configure in **Settings → ConsentHub**
@@ -119,10 +121,17 @@ ConsentHub.showPreferences();
 // Clear consent
 ConsentHub.reset();
 
+// Get detected region
+ConsentHub.getRegion();              // 'eu' | 'ccpa' | 'other'
+
 // Listen for events
 ConsentHub.on('consent', function(data) {
     console.log('User gave consent:', data);
 });
+ConsentHub.off('consent', handler);  // Remove listener
+
+// Version
+ConsentHub.version;                  // '1.3.0'
 ```
 
 ---
@@ -150,8 +159,9 @@ Table: `wp_ch_consent_log` (created on activation)
 |--------|------|---------|
 | id | BIGINT | Primary key |
 | consent_type | VARCHAR(20) | accepted \| rejected \| partial |
-| categories | JSON | Selected categories |
+| categories | VARCHAR(255) | Selected categories (JSON) |
 | geo_region | VARCHAR(10) | eu \| ccpa \| other |
+| ip_partial | VARCHAR(39) | Masked IP (first 3 octets) |
 | ip_hash | VARCHAR(64) | SHA256 of masked IP (non-reversible) |
 | user_agent_hash | VARCHAR(64) | SHA256 of masked User-Agent |
 | created_at | DATETIME | UTC timestamp |
@@ -162,8 +172,8 @@ Table: `wp_ch_consent_log` (created on activation)
 
 | Metric | Value |
 |--------|-------|
-| JS File Size | 24KB source / 12KB minified / 4.3KB gzipped |
-| CSS Size | 6.3KB / 1.6KB gzipped |
+| JS File Size | ~23KB source / ~13KB minified |
+| CSS Size | ~6KB source / ~4KB minified |
 | Network Requests | 1 JS + 1 CSS on first load |
 | Logging POST | ~200 bytes (fire-and-forget, non-blocking) |
 | Dashboard Load | Admin only, <100ms DB query |
@@ -181,27 +191,34 @@ consent-hub/
 ├── vanilla/                            # Standalone engine (non-WordPress)
 │   ├── consent-hub.js                  # Main engine
 │   ├── consent-hub.min.js              # Minified version
-│   └── consent-hub.css                 # Styles
+│   ├── consent-hub.css                 # Styles
+│   └── consent-hub.min.css             # Minified styles
 │
 ├── wordpress/consent-hub/              # WordPress plugin source
 │   ├── consent-hub.php                 # Main plugin file
+│   ├── uninstall.php                   # Clean uninstall handler
 │   ├── includes/
 │   │   ├── class-frontend.php          # Asset enqueueing + config
 │   │   ├── class-admin.php             # WP admin panel
 │   │   ├── class-dashboard.php         # Metrics dashboard
-│   │   ├── class-database.php          # Logging table
+│   │   ├── class-database.php          # Logging table + deduplication
 │   │   ├── class-ajax.php              # Logging endpoint
 │   │   ├── class-geo.php               # Geolocation detection
 │   │   └── class-wp-consent.php        # WP Consent API bridge
 │   ├── assets/
-│   │   ├── consent-hub.min.js          # Engine (synced from vanilla/)
-│   │   ├── consent-hub.css             # Styles (synced from vanilla/)
+│   │   ├── consent-hub.js              # Engine source
+│   │   ├── consent-hub.min.js          # Engine minified
+│   │   ├── consent-hub.css             # Banner styles
+│   │   ├── consent-hub.min.css         # Banner styles minified
 │   │   ├── wp-consent-bridge.js        # WP Consent API bridge
 │   │   ├── dashboard.js               # Chart.js init
 │   │   ├── dashboard.css              # Dashboard styles
-│   │   └── admin.css                  # WP admin styles
+│   │   ├── admin.js                   # Admin panel logic
+│   │   └── admin.css                  # Admin panel styles
 │   └── languages/
-│       └── consent-hub.pot             # Translation template
+│       ├── consent-hub.pot             # Translation template
+│       ├── consent-hub-es_ES.po        # Spanish translation
+│       └── consent-hub-es_ES.mo        # Spanish compiled
 │
 ├── demo.html                           # Standalone demo
 ├── demo.css                            # Demo styles
@@ -226,9 +243,10 @@ cd wordpress && powershell -Command "Compress-Archive -Path 'consent-hub' -Desti
 ### Requirements
 
 - **PHP:** 7.4 or higher
+- **MySQL:** 5.7+ / MariaDB 10.2+
 - **WordPress:** 5.0 or higher (for plugin)
 - **Browser:** ES5 compatible (IE11+)
-- **Dependencies:** Zero
+- **Dependencies:** Zero (Chart.js loaded via CDN for dashboard only)
 
 ---
 
@@ -266,13 +284,16 @@ Free for commercial use, but you must:
 
 ## Changelog
 
-### v1.4.0-beta (2026-03-20)
+### v1.4.0 (2026-03-23)
 - ✨ Dashboard with consent metrics & 7-day chart
+- ✨ CSV export with date, type, and region filters
 - ✨ Logging system (local DB, non-reversible hashing)
+- ✨ es_ES translations
+- 🐛 Fix duplicate consent logging (one record per visitor)
+- 🐛 Fix MySQL 5.7+ index compatibility
 - 🌐 Full i18n support (WPML, Polylang, Loco Translate)
 - ♻️ Externalized all inline CSS/JS (CSP-compatible)
 - 🚚 Restructured project: `vanilla/` folder + `plugin-consent-hub.zip`
-- 🐛 Fixed stale minified JS missing logConsent()
 
 ### v1.3.0 (2026-03-19)
 - ✨ Geolocation detection (Cloudflare, Vercel, etc.)
@@ -296,9 +317,9 @@ Free for commercial use, but you must:
 
 ## Support
 
-- 📖 [Documentation](https://github.com/sfernandev/consent-hub/wiki)
-- 🐛 [Issues](https://github.com/sfernandev/consent-hub/issues)
-- 💬 [Discussions](https://github.com/sfernandev/consent-hub/discussions)
+- 📖 [Documentation](https://github.com/SFernandev/WpConsentHub/wiki)
+- 🐛 [Issues](https://github.com/SFernandev/WpConsentHub/issues)
+- 💬 [Discussions](https://github.com/SFernandev/WpConsentHub/discussions)
 
 ---
 
