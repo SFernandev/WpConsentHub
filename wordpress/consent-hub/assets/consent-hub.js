@@ -366,14 +366,28 @@
   }
 
   function saveConsent(categories) {
+    var prevConsent = consent;
     consent = { categories: categories, timestamp: new Date().toISOString(), version: VERSION };
     setCookie(config.cookieName, consent, config.cookieDays, config.cookieDomain);
     hideBanner(); showRevisit(); applyConsent(); gcmUpdate();
     emit('consent', consent);
     if (typeof config.onConsent === 'function') config.onConsent(consent);
 
-    // Log consent (fire and forget)
-    logConsent(categories);
+    // Log only if first consent or categories changed
+    if (!prevConsent || categoriesChanged(prevConsent.categories, categories)) {
+      logConsent(categories);
+    }
+  }
+
+  function categoriesChanged(prev, next) {
+    if (!prev) return true;
+    for (var k in next) {
+      if (next.hasOwnProperty(k) && prev[k] !== next[k]) return true;
+    }
+    for (var k in prev) {
+      if (prev.hasOwnProperty(k) && prev[k] !== next[k]) return true;
+    }
+    return false;
   }
 
   function logConsent(categories) {

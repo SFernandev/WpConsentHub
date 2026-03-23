@@ -29,7 +29,8 @@ class CH_Database {
 			user_agent_hash VARCHAR(64),
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 			INDEX (consent_type),
-			INDEX (created_at)
+			INDEX (created_at),
+			INDEX idx_visitor (ip_hash, user_agent_hash)
 		) {$charset_collate};";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -104,9 +105,25 @@ class CH_Database {
 		$ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ) : '';
 		$ua_hash = hash( 'sha256', $ua );
 
+		$safe_type       = sanitize_text_field( $type );
+		$safe_categories = wp_json_encode( $categories );
+
+		// Skip if identical consent already exists for this visitor
+		$existing = $wpdb->get_row( $wpdb->prepare(
+			"SELECT consent_type, categories FROM {$table}
+			 WHERE ip_hash = %s AND user_agent_hash = %s
+			 ORDER BY created_at DESC LIMIT 1",
+			$ip_hash,
+			$ua_hash
+		) );
+
+		if ( $existing && $existing->consent_type === $safe_type && $existing->categories === $safe_categories ) {
+			return;
+		}
+
 		$wpdb->insert( $table, array(
-			'consent_type'   => sanitize_text_field( $type ),
-			'categories'     => wp_json_encode( $categories ),
+			'consent_type'   => $safe_type,
+			'categories'     => $safe_categories,
 			'geo_region'     => sanitize_text_field( $region ),
 			'ip_partial'     => $ip_partial,
 			'ip_hash'        => $ip_hash,
@@ -298,6 +315,51 @@ class CH_Database {
 			"SELECT id, consent_type, categories, geo_region, ip_partial, created_at
 			 FROM {$table} ORDER BY created_at DESC"
 		);
+	}
+
+	/**
+	 * Remove duplicate consent logs, keeping only the latest per visitor.
+	 *
+	 * @return int Number of rows deleted.
+	 */
+	public static function deduplicate() {
+		global $wpdb;
+		$table = self::table_name();
+
+		if ( ! self::table_exists() ) {
+			return 0;
+		}
+
+		// Ensure index exists for the self-join (compatible with MySQL 5.7+)
+		$index_exists = $wpdb->get_var( "SHOW INDEX FROM {$table} WHERE Key_name = 'idx_visitor'" );
+		if ( ! $index_exists ) {
+			$wpdb->query( "CREATE INDEX idx_visitor ON {$table} (ip_hash, user_agent_hash)" );
+		}
+
+		// Keep the latest record per ip_hash + user_agent_hash + consent_type + categories
+		// Process in batches to avoid lock escalation on large tables
+		$total = 0;
+		do {
+			$batch = $wpdb->query(
+				"DELETE t1 FROM {$table} t1
+				 INNER JOIN {$table} t2
+				 ON t1.ip_hash = t2.ip_hash
+				 AND t1.user_agent_hash = t2.user_agent_hash
+				 AND t1.consent_type = t2.consent_type
+				 AND t1.categories = t2.categories
+				 AND t1.id < t2.id
+				 LIMIT 1000"
+			);
+
+			if ( false === $batch ) {
+				error_log( 'ConsentHub: deduplicate query failed — ' . $wpdb->last_error );
+				break;
+			}
+
+			$total += $batch;
+		} while ( $batch > 0 );
+
+		return $total;
 	}
 
 	/**

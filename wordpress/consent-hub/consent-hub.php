@@ -46,6 +46,12 @@ function ch_init() {
 	if ( is_admin() ) {
 		CH_Admin::init();
 		CH_Dashboard::init();
+
+		// One-time deduplication of consent logs (v1.4.0-fix)
+		if ( ! get_option( 'ch_dedup_v2' ) ) {
+			update_option( 'ch_dedup_v2', true );
+			CH_Database::deduplicate();
+		}
 	}
 }
 add_action( 'plugins_loaded', 'ch_init' );

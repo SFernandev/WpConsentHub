@@ -129,6 +129,7 @@ development-notes.md
 local-test-*.php
 tests/
 mockup-*.html
+build-zip.php
 
 # =============================================================================
 # SAFE TO COMMIT
